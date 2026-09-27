@@ -1,0 +1,2852 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taiwan Travel AI｜台灣旅遊景點一頁式網站產生器</title>
+  <meta name="description" content="輸入台灣旅遊景點名稱，AI 自動生成包含必訪亮點、在地美食、行程規劃、交通指南與實用 Tips 的精美一頁式響應式旅遊網站。" />
+  <meta name="keywords" content="台灣旅遊,AI旅遊產生器,九份,日月潭,阿里山,墾丁,淡水,台灣景點,旅遊行程規劃" />
+  <meta property="og:title" content="Taiwan Travel AI｜台灣旅遊景點一頁式網站產生器" />
+  <meta property="og:description" content="輸入台灣旅遊景點名稱，AI 自動生成完整旅遊景點一頁式網站。" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style id="app-styles">
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #f0f9ff;
+      --accent: #f97316;
+      --accent-hover: #ea580c;
+      --emerald: #059669;
+      --dark: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.08), 0 2px 6px -1px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 24px -4px rgba(0,0,0,0.1), 0 6px 12px -3px rgba(0,0,0,0.05);
+      --shadow-xl: 0 20px 30px -6px rgba(0,0,0,0.12);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: var(--slate-800);
+      background-color: #f8fafc;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Generator Top Bar */
+    .gen-bar {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%);
+      color: #ffffff;
+      padding: 36px 20px 30px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 100;
+    }
+
+    .gen-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .gen-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .gen-brand {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gen-badge {
+      background: linear-gradient(90deg, #f97316, #fb923c);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
+    }
+
+    .gen-brand h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .gen-brand h1 span {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #bae6fd;
+    }
+
+    .gen-subtitle {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      margin-top: 8px;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Search Form */
+    .gen-form {
+      max-width: 820px;
+      margin: 0 auto 18px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border-radius: var(--radius-full);
+      padding: 6px 8px 6px 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.35);
+    }
+
+    .search-icon {
+      color: var(--slate-500);
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .input-wrapper input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1.05rem;
+      font-family: inherit;
+      color: var(--dark);
+      background: transparent;
+      min-width: 140px;
+    }
+
+    .input-wrapper input::placeholder {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    .gen-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .gen-btn:hover {
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5);
+    }
+
+    .gen-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Sample Tags */
+    .sample-tags-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .sample-label {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .sample-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .sample-tag {
+      background: rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .sample-tag:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+    }
+
+    .sample-tag.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .loading-overlay.hidden {
+      display: none;
+    }
+
+    .loading-modal {
+      background: #ffffff;
+      padding: 36px 32px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: var(--shadow-xl);
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .spinner-ring {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 18px;
+      border: 4px solid #e2e8f0;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .loading-step {
+      font-size: 0.9rem;
+      color: var(--slate-500);
+      margin-bottom: 20px;
+      min-height: 22px;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Generated Website Styles */
+    #website-output {
+      min-height: 60vh;
+    }
+
+    /* Site Navigation Bar */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      transition: var(--transition);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .nav-logo-icon {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--slate-600);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn-alt {
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn-alt:hover {
+      background: #e2e8f0;
+      color: var(--dark);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--dark);
+      padding: 6px;
+    }
+
+    .mobile-nav-drawer {
+      display: none;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mobile-nav-drawer.open {
+      display: flex;
+    }
+
+    .mobile-nav-drawer a {
+      text-decoration: none;
+      color: var(--slate-700);
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    /* Common Section Styles */
+    .section-wrap {
+      padding: 72px 20px;
+    }
+
+    .section-alt {
+      background-color: #f1f5f9;
+    }
+
+    .content-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 48px;
+    }
+
+    .section-tag {
+      display: inline-block;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      border: 1px solid rgba(2, 132, 199, 0.2);
+    }
+
+    .section-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      color: var(--slate-500);
+      font-size: 1.05rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      background-size: cover;
+      background-position: center center;
+      overflow: hidden;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 24px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      line-height: 1.15;
+    }
+
+    .hero-slogan {
+      font-size: 1.45rem;
+      font-weight: 500;
+      color: #fdba74;
+      margin-bottom: 20px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .hero-intro {
+      font-size: 1.12rem;
+      line-height: 1.8;
+      color: #e2e8f0;
+      margin-bottom: 32px;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .hero-meta-pill {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-btn-primary {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: var(--radius-full);
+      font-size: 1.05rem;
+      font-weight: 700;
+      box-shadow: 0 4px 18px rgba(249, 115, 22, 0.5);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(249, 115, 22, 0.6);
+    }
+
+    .hero-btn-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: var(--radius-full);
+      font-size: 1.05rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .hero-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: #ffffff;
+    }
+
+    /* About Section */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .about-article {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .about-lead {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    .about-p {
+      color: var(--slate-600);
+      font-size: 1.02rem;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .about-p:last-of-type {
+      margin-bottom: 24px;
+    }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .about-tag-item {
+      background: #f1f5f9;
+      color: var(--slate-700);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .about-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .metric-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .metric-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .metric-lbl {
+      font-size: 0.85rem;
+      color: var(--slate-500);
+    }
+
+    /* Highlights Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
+    }
+
+    .card-img-wrap {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      background: #e2e8f0;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover .card-img {
+      transform: scale(1.06);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(6px);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .card-feature {
+      display: inline-block;
+      color: var(--primary);
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .card-desc {
+      color: var(--slate-600);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 18px;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      font-size: 0.85rem;
+      color: var(--slate-500);
+    }
+
+    /* Food Cards */
+    .food-card {
+      background: #ffffff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .food-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .food-img-wrap {
+      height: 200px;
+      position: relative;
+      background: #fed7aa;
+    }
+
+    .food-body {
+      padding: 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .food-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .food-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .food-tag {
+      background: #fff7ed;
+      color: #ea580c;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid #ffedd5;
+    }
+
+    .food-flavor {
+      color: var(--slate-600);
+      font-size: 0.93rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .food-spot {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: var(--slate-700);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #f1f5f9;
+    }
+
+    /* Itinerary Timeline */
+    .itinerary-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .itinerary-tab-btn {
+      background: #ffffff;
+      color: var(--slate-700);
+      border: 1px solid var(--border);
+      padding: 10px 24px;
+      border-radius: var(--radius-full);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .itinerary-tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .timeline-container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      padding-left: 36px;
+    }
+
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 10px;
+      bottom: 10px;
+      width: 3px;
+      background: linear-gradient(180deg, #0284c7 0%, #38bdf8 100%);
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -36px;
+      top: 6px;
+      width: 25px;
+      height: 25px;
+      background: #ffffff;
+      border: 4px solid var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+      transform: translateX(3px);
+    }
+
+    .timeline-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .timeline-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: #cbd5e1;
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .timeline-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .timeline-type {
+      font-size: 0.8rem;
+      background: var(--slate-100);
+      color: var(--slate-600);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    .timeline-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .timeline-text {
+      color: var(--slate-600);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* Transportation Grid */
+    .transit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .transit-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .transit-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .transit-icon-wrap {
+      width: 52px;
+      height: 52px;
+      background: var(--primary-light);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 18px;
+    }
+
+    .transit-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .transit-desc {
+      color: var(--slate-600);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* Travel Tips Grid */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .tip-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      border-left: 4px solid var(--primary);
+    }
+
+    .tip-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .tip-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .tip-icon {
+      font-size: 1.5rem;
+    }
+
+    .tip-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .tip-body {
+      color: var(--slate-600);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* FAQ Accordion */
+    .faq-container {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .faq-item {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .faq-item:hover {
+      border-color: #cbd5e1;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 18px 24px;
+      background: transparent;
+      border: none;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-family: inherit;
+    }
+
+    .faq-icon-cross {
+      width: 20px;
+      height: 20px;
+      stroke: var(--slate-500);
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.active .faq-icon-cross {
+      transform: rotate(45deg);
+      stroke: var(--primary);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 24px 20px 24px;
+      color: var(--slate-600);
+      font-size: 0.98rem;
+      line-height: 1.75;
+      border-top: 1px dashed #f1f5f9;
+      padding-top: 14px;
+    }
+
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+
+    /* CTA Section */
+    .cta-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%);
+      color: #ffffff;
+      border-radius: 24px;
+      padding: 60px 32px;
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .cta-desc {
+      font-size: 1.15rem;
+      color: #e2e8f0;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.8;
+    }
+
+    .cta-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn-main {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #ffffff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: var(--radius-full);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 18px rgba(249, 115, 22, 0.4);
+    }
+
+    .cta-btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(249, 115, 22, 0.5);
+    }
+
+    .cta-btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      padding: 12px 28px;
+      border-radius: var(--radius-full);
+      font-size: 1.02rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .cta-btn-outline:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: #ffffff;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 60px 20px 36px;
+      border-top: 1px solid #1e293b;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      color: #ffffff;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .footer-tagline {
+      font-size: 1rem;
+      color: #cbd5e1;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 12px;
+    }
+
+    /* Floating Back to Top */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 46px;
+      height: 46px;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 80;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: var(--transition);
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: #0369a1;
+      transform: translateY(-2px);
+    }
+
+    /* Toast notification */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(15, 23, 42, 0.9);
+      color: white;
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      z-index: 10000;
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-lg);
+    }
+    .toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-title {
+        font-size: 2.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .gen-brand h1 {
+        font-size: 1.45rem;
+      }
+      .gen-brand h1 span {
+        font-size: 1.05rem;
+      }
+      .input-wrapper {
+        flex-direction: column;
+        border-radius: 16px;
+        padding: 12px;
+        gap: 10px;
+      }
+      .input-wrapper input {
+        width: 100%;
+        text-align: center;
+      }
+      .gen-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .hero-title {
+        font-size: 2.2rem;
+      }
+      .hero-slogan {
+        font-size: 1.15rem;
+      }
+      .hero-intro {
+        font-size: 1rem;
+      }
+      .section-title {
+        font-size: 1.7rem;
+      }
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .about-metrics {
+        grid-template-columns: 1fr 1fr;
+      }
+      .cta-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="generator-app">
+    <!-- Generator Bar -->
+    <header class="gen-bar" id="gen-bar">
+      <div class="gen-container">
+        <div class="gen-header">
+          <div class="gen-brand">
+            <span class="gen-badge">AI Generator</span>
+            <h1>Taiwan Travel AI <span>台灣旅遊景點一頁式網站產生器</span></h1>
+          </div>
+          <p class="gen-subtitle">輸入台灣任何景點名稱，AI 智慧即刻為您架構出專屬的高質感一頁式旅遊指南網站</p>
+        </div>
+
+        <form id="travel-form" class="gen-form" onsubmit="event.preventDefault(); handleGenerate();">
+          <div class="input-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input 
+              type="text" 
+              id="spot-input" 
+              placeholder="請輸入台灣旅遊景點，例如：九份、日月潭、阿里山、墾丁、淡水、台南、花蓮..." 
+              autocomplete="off"
+              required 
+            />
+            <button type="submit" id="submit-btn" class="gen-btn">
+              <span class="btn-text">✨ AI 產生旅遊網站</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="sample-tags-wrapper">
+          <span class="sample-label">範例推薦景點：</span>
+          <div class="sample-tags" id="sample-tags">
+            <!-- Sample tags will be rendered here -->
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- AI Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-modal">
+        <div class="spinner-ring"></div>
+        <div class="loading-title">Taiwan Travel AI 正在生成網站...</div>
+        <div class="loading-step" id="loading-step">正在收集景點地理人文資料...</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generated Website Output Container -->
+    <main id="website-output">
+      <!-- Generated Website will be rendered here -->
+    </main>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" title="回到頂部" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+  </div>
+
+  <script id="app-scripts">
+    // --- Taiwan Travel Database & AI Generator ---
+    const SPOTS_DB = {
+      "九份": {
+        name: "九份",
+        enName: "Jiufen Mountain Town",
+        region: "新北市瑞芳區",
+        badge: "🇹🇼 台灣必訪黃金山城 · 宮崎駿動畫靈感地",
+        slogan: "漫步雲霧山城，品味千尋紅燈籠下的百年茶香記憶",
+        heroImage: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1600&q=80",
+        intro: "九份依山面海，早年因淘金熱潮而繁盛，留下層層疊疊的黑油毛氈屋頂與蜿蜒石階。當黃昏降臨，豎崎路兩側大紅燈籠逐一亮起，茶樓飄出高山烏龍的甘醇芳香，宛如走入神隱少女的魔幻世界。",
+        metrics: {
+          culture: "9.8 / 10",
+          nature: "9.2 / 10",
+          food: "9.6 / 10",
+          transit: "8.8 / 10"
+        },
+        meta: {
+          season: "四季皆宜 (秋芒與春霧最詩意)",
+          duration: "建議 1 - 2 天",
+          target: "情侶約會、文青慢活、攝影愛好者",
+          crowd: "假日人潮踴躍，建議平日探訪"
+        },
+        about: {
+          lead: "一座從淘金繁華歸於平靜，又因電影《悲情城市》與茶藝文化重生的黃金山城。",
+          p1: "九份的歷史最早可追溯至清領時期，因當時僅有九戶人家，每次物資採買都分成九份而得名。光緒年間發現金礦後，吸引數以萬計的淘金客湧入，博得『小香港』與『亞洲金都』之美譽。",
+          p2: "採金熱潮退去後，九份在侯孝賢執導的威尼斯金獅獎名作《悲情城市》取景下重獲世界注目。沿著豎崎路拾級而上，百年昇平戲院、海悅樓與阿妹茶樓相映成趣，遠眺深澳岬角與陰陽海，山海之美令人屏息。",
+          tags: ["採金歷史", "紅燈籠夜景", "景觀茶藝", "老街小吃", "陰陽海遠眺"]
+        },
+        highlights: [
+          {
+            name: "阿妹茶樓",
+            feature: "地標茶館 · 經典夜景",
+            desc: "九份最具代表性的茶樓地標，日治時期木造建築掛滿朱紅燈籠，品嚐高山茶佐茶點，享受山海雲霧景致。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1543731068-7e0f5beff43a?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "豎崎路景觀石階",
+            feature: "垂直山城動線 · 必拍機位",
+            desc: "穿貫九份核心的陡峭石階步道，兩旁林立特色茶館與文創工坊，夜幕低垂時紅燈籠如星火連綿，如夢似幻。",
+            duration: "建議停留 45 分鐘",
+            image: "https://images.unsplash.com/photo-1508247967583-7d982ea01526?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "昇平戲院",
+            feature: "北台灣最老戲院 · 懷舊文史",
+            desc: "建於 1934 年的歷史戲院，見證了當年淘金客揮金如土的紙醉金迷歲月，現完整保留復古售票口與骨董放映機。",
+            duration: "建議停留 30 分鐘",
+            image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "基山街老街商圈",
+            feature: "在地小吃 · 手作工藝",
+            desc: "九份最熱鬧的主要街道，俗稱暗街仔，雲集全台知名的芋圓、草仔粿、手作皮件與古早味糕餅店。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "雞籠山登山步道",
+            feature: "360度環景 · 眺望陰陽海",
+            desc: "自老街步行約 15 分鐘可抵達登山口，沿著石階登頂僅需約 35 分鐘，可俯瞰整座九份金瓜石與太平洋海灣。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "不厭亭 (寂寞公路)",
+            feature: "攝影聖地 · 芒草公路",
+            desc: "座落瑞雙公路最高處，一側俯瞰雙溪一側眺望瑞芳海天，秋天整片山巒被白芒覆蓋，宛如電影場景。",
+            duration: "建議停留 45 分鐘",
+            image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        foods: [
+          {
+            name: "阿柑姨芋圓",
+            tag: "景觀老店",
+            flavor: "嚴選大甲芋頭與金山地瓜手揉現做，口感軟Q彈牙，搭配絕佳面海觀景窗，冷熱皆宜。",
+            spot: "推薦位置：豎崎路最高點（國小旁）"
+          },
+          {
+            name: "阿蘭草仔粿 / 芋粿巧",
+            tag: "百年排隊美食",
+            flavor: "外皮以天然鼠麴草揉製散發草本清香，內餡菜脯米鹹香濃郁，是九份必帶伴手禮首選。",
+            spot: "推薦位置：基山街老街中段"
+          },
+          {
+            name: "傳統紅糟肉圓",
+            tag: "在地特色",
+            flavor: "使用純釀紅糟醃漬鮮溫體豬肉，外皮晶瑩剔透彈嫩，淋上特調甜辣醬汁與筍絲格外爽口。",
+            spot: "推薦位置：金枝紅糟肉圓"
+          },
+          {
+            name: "高山烏龍冷泡茶與茶點",
+            tag: "人文茶藝",
+            flavor: "以台灣阿里山、杉林溪高山茶葉現泡，搭配綠豆糕與梅汁番茄，沉澱身心舒緩疲憊。",
+            spot: "推薦位置：海悅樓或阿妹茶樓"
+          }
+        ],
+        itinerary1: [
+          { time: "09:30 - 10:30", type: "交通抵達", title: "搭乘客運抵達九份老街", desc: "自台北捷運西門站搭乘 965 快速公車或忠孝復興搭乘 1062 公車，沿途欣賞瑞芳山海景色。" },
+          { time: "10:30 - 12:00", type: "老街巡禮", title: "基山街手作探索與阿蘭草仔粿", desc: "早晨遊客較少，漫步老街挑選文創紀念品，先品嚐剛出爐熱騰騰的菜脯米草仔粿。" },
+          { time: "12:00 - 13:30", type: "在地午餐", title: "紅糟肉圓與豎崎路最高點阿柑姨芋圓", desc: "享用在地風味紅糟肉圓午餐，隨後沿豎崎路爬上景觀窗前，享用芋香滿溢的招牌綜合芋圓。" },
+          { time: "13:30 - 15:30", type: "文化走讀", title: "參訪昇平戲院與穿屋巷古道", desc: "走進北台灣最古老的戲院參觀復古放映設備，穿梭九份特色穿屋巷，感受山城立體聚落工藝。" },
+          { time: "16:00 - 18:00", type: "黃金時刻", title: "阿妹茶樓品茗與日落晚霞", desc: "坐在景觀茶樓陽台，細細品味高山烏龍茶，靜靜欣賞海平線上陰陽海的夕陽落日變幻。" },
+          { time: "18:00 - 19:30", type: "絕美夜景", title: "豎崎路紅燈籠點燈夜拍", desc: "華燈初上，捕捉紅燈籠點亮的經典奇幻畫面，結束收穫滿滿的九份一日遊。" }
+        ],
+        itinerary2: [
+          { time: "Day 1 上午", type: "黃金探索", title: "水湳洞陰陽海 ➔ 黃金瀑布 ➔ 金瓜石黃金博物館", desc: "順遊水金九地區，走訪奇異雙色陰陽海與雄偉十三層遺址，在金瓜石觸摸重達220公斤的999純金金磚。" },
+          { time: "Day 1 下午", type: "山城漫步", title: "九份老街美食 ➔ 昇平戲院 ➔ 豎崎路紅燈籠夜景", desc: "入宿九份特色山海民宿，避開日間遊覽車潮，夜間獨享寧靜祥和的石階山城步道。" },
+          { time: "Day 2 清晨", type: "朝陽晨曦", title: "雞籠山步道登頂遠眺太平洋日出", desc: "早起登雞籠山，晨霧繚繞中俯瞰東北角海岸線，呼吸清新山林負離子。" },
+          { time: "Day 2 下午", type: "寂寞美景", title: "不厭亭寂寞公路 ➔ 猴硐貓村散策", desc: "包車或租車前往網美聖地不厭亭，順路拜訪貓咪友善的猴硐礦業文創園區，圓滿賦歸。" }
+        ],
+        transit: [
+          { icon: "🚗", title: "自行開車", desc: "國道1號大華系統交流道接台62線快速公路，下瑞芳交流道接市道102線。假日九份路狹車多實施交管，建議停放水湳洞或新九號停車場轉乘接駁公車。" },
+          { icon: "🚄", title: "台鐵火車", desc: "搭乘台鐵自強號/區間車至『瑞芳火車站』，出站右轉至瑞芳警局旁公車站轉乘基隆客運 788、827 或 965 直達九份老街站，車程約 15 分鐘。" },
+          { icon: "🚌", title: "台北直達客運", desc: "捷運『西門站 / 北門站』搭乘 965 號快速公車（約60分鐘直達）；或捷運『忠孝復興站』搭乘 1062 號公車直達九份老街。" },
+          { icon: "🚐", title: "共乘接駁與包車", desc: "瑞芳火車站外設有合法觀光計程車排班處，提供統一公定價按表或定額收費，適合攜帶長輩或大型行李旅客。" },
+          { icon: "🚶", title: "步行與穿街", desc: "九份全區為階梯路網，景點間步行皆在 5-15 分鐘內。石階起伏大，請穿著避震防滑之休閒運動鞋。" },
+          { icon: "🅿️", title: "停車資訊", desc: "老街周邊停車位極少且收費較高（每小時100-150元），建議善用山下新九號大型停車場（每次約100元）再轉搭接駁專車。" }
+        ],
+        tips: [
+          { icon: "☀️", title: "最佳旅遊季節", desc: "四季皆宜，9月至11月秋季天高氣爽且滿山秋芒；3月至5月春季雲霧繚繞最富山城仙氣。" },
+          { icon: "👟", title: "穿著防滑建議", desc: "老街石階多且陡，務必穿著防滑休閒鞋。山區氣候多變，隨身攜帶輕薄風衣防風。" },
+          { icon: "☔", title: "隨身雨具準備", desc: "九份迎東北季風，降雨機率高，素有『飲皇天甘露』之說，務必攜帶便攜折疊傘或雨衣。" },
+          { icon: "📷", title: "經典拍照打卡點", desc: "阿妹茶樓正對面的『海悅樓景觀台』是拍紅燈籠連線最佳角度；豎崎路階梯由下往上仰拍最富立體感。" },
+          { icon: "👨‍👩‍👧", title: "長輩親子友善度", desc: "階梯繁多且無法推嬰兒車或輪椅，建議行動不便者可安排在近輕便路的平坦茶館休憩觀景。" },
+          { icon: "⚠️", title: "避開人潮秘訣", desc: "假日午後 13:00-17:00 人潮最擁擠，建議上午 10:30 前或傍晚 18:30 後留宿山城，才能感受真誠寧靜。" }
+        ],
+        faq: [
+          { q: "進入九份老街需要購買門票嗎？", a: "九份老街為開放式觀光街區，完全免費參觀！僅少數特定歷史展館（如黃金博物館內部設施）或私人茶藝館消費需另行付費。" },
+          { q: "建議停留九份多久最合適？", a: "純逛老街品嚐小吃約需 2.5 - 3.5 小時；若加上茶樓品茗與欣賞日落夜景建議停留 5 - 6 小時；若深度體驗水金九建議安排兩天一夜住宿。" },
+          { q: "九份老街店家通常營業到幾點？", a: "大部分小吃店家平日在 18:30 - 19:00 就開始收攤，假日約營業至 19:30 - 20:00；主要景觀茶樓（如阿妹茶樓、海悅樓）則會營業至 21:00 - 22:00。" },
+          { q: "下雨天去九份適合嗎？會不會沒地方去？", a: "九份雨景格外朦朧美麗，古稱『水九份』！老街大部分路段有遮雨棚，且周邊林立眾多高品質室內觀景茶館與昇平戲院，雨天坐看山嵐翻湧別具風情。" },
+          { q: "帶嬰兒推車或坐輪椅方便逛九份嗎？", a: "九份核心景點如豎崎路皆由數百階石梯組成，路幅窄且坡度陡，極不適合使用推車與輪椅。若同行有行動不便者，建議搭車直達觀景餐廳聚會。" },
+          { q: "從台北市區出發怎麼去九份最方便？", a: "最方便直達的是從捷運西門站或北門站搭乘『965 快速公車』，一班車直達老街門口，免去在火車站轉乘公車的等候時間。" },
+          { q: "九份必買的伴手禮有哪些？", a: "推薦阿蘭草仔粿、現煮冷凍芋圓生鮮盒、紅糟肉圓盒裝、蜂巢糕、炭焙高山烏龍茶以及台灣手作木雕皮革工藝品。" }
+        ]
+      },
+
+      "日月潭": {
+        name: "日月潭",
+        enName: "Sun Moon Lake",
+        region: "南投縣魚池鄉",
+        badge: "🇹🇼 台灣八景之一 · 全球十大最美自行車道",
+        slogan: "晨曦湖畔騎行，泛舟於群山環抱的翡翠琉璃水色之中",
+        heroImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+        intro: "日月潭是台灣最大的天然湖泊，以拉魯島為界，東側形如日輪，西側狀若月鉤。晨昏雲霧變幻莫測，搭乘遊艇穿梭水社、伊達邵與玄光寺三大碼頭，或沿著CNN評選全球最美的環潭自行車道漫遊，感受極致身心療癒。",
+        metrics: {
+          culture: "9.5 / 10",
+          nature: "9.9 / 10",
+          food: "9.1 / 10",
+          transit: "9.0 / 10"
+        },
+        meta: {
+          season: "四季皆美 (秋季日月潭花火節最佳)",
+          duration: "建議 1 - 2 天",
+          target: "家庭親子、戶外單車、長輩樂活",
+          crowd: "環湖步道寬敞，適合漫遊度假"
+        },
+        about: {
+          lead: "邵族祖靈聖地，匯聚大自然靈秀與原住民豐富人文底蘊的高山明珠。",
+          p1: "相傳邵族先民因追逐一頭健美白鹿而發現這片水草豐美、碧波萬頃的高山湖泊，從此在此定居繁衍。湖中央的拉魯島被邵族視為祖靈安息的神聖之境。",
+          p2: "日治時期修築水庫發電工程後湖面更加開闊。如今融合了水陸空三棲玩法：水上電動遊艇、向山水上自行車步道、以及高空俯瞰全湖的日月潭纜車，每年吸引無數海內外旅人流連忘返。",
+          tags: ["全球最美單車道", "向山遊客中心", "邵族原鄉", "台茶18號紅玉", "日月潭纜車"]
+        },
+        highlights: [
+          {
+            name: "向山遊客中心與水上自行車道",
+            feature: "清水模建築大師之作 · 水天一色",
+            desc: "由日本建築巨擘團紀彥操刀設計，流線清水模與無邊際水池巧妙將建築融於大自然，延伸至湖面上的木棧單車道美如明信片。",
+            duration: "建議停留 2 小時",
+            image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "伊達邵老街碼頭",
+            feature: "邵族文化原鄉 · 美食聚集",
+            desc: "邵族原住民聚落，碼頭周邊熱鬧非凡，品嚐山豬肉香腸、小米麻糬與紅茶蛋捲，欣賞街頭原民歌舞演出。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "日月潭全景高空纜車",
+            feature: "高空360度俯瞰 · 連結九族文化村",
+            desc: "全長 1877 公尺，橫跨卜吉山兩座山頭，在水晶車廂腳踩透明玻璃，鳥瞰整座如翡翠般碧綠的湖面與層疊山巒。",
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "玄光寺與青龍山步道",
+            feature: "歷史古剎 · 阿婆香菇茶葉蛋",
+            desc: "寺內曾供奉玄奘大師靈骨，立於玄光碼頭山腰，可將拉魯島與水社聚落盡收眼底，碼頭旁的阿嬤茶葉蛋更是必吃名物。",
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "文武廟與開基天梯",
+            feature: "巍峨宮殿 · 祈福日落金芒",
+            desc: "坐落潭北山麓，採中國北朝宮殿式風格建造，香火鼎盛。前方面對湖景的觀景台是觀賞潭面夕陽落日的首選名所。",
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "水社壩堰堤公園",
+            feature: "新人婚紗熱點 · 靜謐水草倒影",
+            desc: "綠草如茵的堤岸銜接靜謐湖水，木棧道兩側盛開蘆葦與芒花，沒有任何水泥護欄遮擋，是拍攝倒影的絕佳秘境。",
+            duration: "建議停留 40 分鐘",
+            image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        foods: [
+          {
+            name: "阿婆金盆香菇茶葉蛋",
+            tag: "玄光碼頭傳奇",
+            flavor: "以日月潭紅玉紅茶與埔里特產香菇、中藥材古法熬煮入味，蛋白Q彈蛋黃濕潤濃香。",
+            spot: "推薦位置：玄光碼頭販賣部"
+          },
+          {
+            name: "台茶18號紅玉紅茶甜點",
+            tag: "世界級茶香",
+            flavor: "具有天然肉桂與清涼薄荷甘甜香氣，製成鮮奶茶、義式冰淇淋與千層蛋糕皆為絕品。",
+            spot: "推薦位置：水社商圈及伊達邵茶莊"
+          },
+          {
+            name: "邵族原木烤山豬肉與山豬肉香腸",
+            tag: "原鄉傳統香氣",
+            flavor: "選用在地黑山豬肉，加入馬告（山胡椒）柴火慢烤，外皮焦脆肉質多汁彈牙。",
+            spot: "推薦位置：伊達邵美食街"
+          },
+          {
+            name: "日月潭總統魚料理",
+            tag: "國宴級湖鮮",
+            flavor: "曲腰魚肉質極為細緻滑嫩，清蒸佐蔥薑與破布子提鮮，甘甜滋味令蔣介石總統讚不絕口。",
+            spot: "推薦位置：水社在地熱炒海鮮餐廳"
+          }
+        ],
+        itinerary1: [
+          { time: "09:00 - 11:30", type: "健康單車", title: "水社碼頭出發 ➔ 騎乘向山水上自行車道", desc: "在水社租賃捷安特電輔車，沿永結同心橋、水社壩一路騎至向山遊客中心，在清水模咖啡館品嚐紅玉紅茶。" },
+          { time: "11:30 - 13:00", type: "原民美食", title: "搭乘綠能遊艇至伊達邵碼頭享用午餐", desc: "自水社搭船橫渡湖心，前往伊達邵老街大啖山豬肉包、小米麻糬與馬告香腸。" },
+          { time: "13:30 - 15:30", type: "高空探險", title: "搭乘日月潭高空纜車遠眺全潭景致", desc: "從伊達邵步行至纜車站，登上水晶透明車廂，以鳥瞰視角將翠綠湖水與山林連峰盡收眼底。" },
+          { time: "15:30 - 17:00", type: "湖畔古剎", title: "搭船至玄光寺品嚐阿嬤茶葉蛋", desc: "漫步青龍山步道，品嚐茶香濃郁的香菇茶葉蛋，在觀景平台遙望拉魯島。" },
+          { time: "17:00 - 18:30", type: "夕照落日", title: "文武廟觀日落與湖畔晚霞晚餐", desc: "包車或租車前往文武廟前眺望夕陽金光灑落潭面，隨後在水社碼頭景觀餐廳享用湖鮮晚餐。" }
+        ],
+        itinerary2: [
+          { time: "Day 1", type: "水陸雙享", title: "水社商圈 ➔ 綠能遊艇三碼頭通票 ➔ 伊達邵老街 ➔ 入住湖景飯店", desc: "暢遊各大碼頭，午後入住水社或伊達邵面湖景觀飯店，坐在陽台靜靜欣賞黃昏湖景與星空倒影。" },
+          { time: "Day 2", type: "晨曦探索", title: "晨間向山湖畔 SUP 立槳體驗 ➔ 車埕木業小鎮", desc: "清晨在平靜無波的潭面划行 SUP 立槳迎接第一道曙光，午後轉往鄰近充滿綠意木香的車埕鐵道小鎮。" }
+        ],
+        transit: [
+          { icon: "🚗", title: "自行開車", desc: "國道3號於霧峰系統接國道6號，在愛蘭交流道下接台14線轉台21線，約 30 分鐘即可抵達水社碼頭。" },
+          { icon: "🚄", title: "高鐵轉台灣好行", desc: "搭乘台灣高鐵至『台中站』，於5號出口搭乘『台灣好行日月潭線 (6670)』，約 80 分鐘直達水社遊客中心。" },
+          { icon: "🚌", title: "環湖公車 (6669)", desc: "水社遊客中心每 30 分鐘發車，停靠文武廟、纜車站、伊達邵、玄光寺等主要站點，可購買一日乘車券無限搭乘。" },
+          { icon: "🚢", title: "綠能電動遊艇", desc: "水社、伊達邵、玄光寺三碼頭往返遊艇班次頻繁，船長沿途提供生動風趣的導覽解說，是遊潭經典體驗。" },
+          { icon: "🚲", title: "環潭自行車租賃", desc: "水社與向山設有多間單車租賃店，包含專業公路車、公路電輔車與親子車，騎乘水上自行車道安全順暢。" },
+          { icon: "🅿️", title: "停車資訊", desc: "水社中興停車場車位充足，向山遊客中心亦設有大型免費停車場，建議提早前往避免車位客滿。" }
+        ],
+        tips: [
+          { icon: "☀️", title: "最佳旅遊季節", desc: "秋季（10-11月）舉辦日月潭國際花火音樂節，氣候涼爽宜人，是全年度最璀璨的旅遊黃金期。" },
+          { icon: "🚲", title: "自行車騎乘建議", desc: "水社至向山段為最平緩友善的經典路段，適合全員騎行；若想挑戰環湖一圈（約30公里）坡度起伏大，建議租借電輔車。" },
+          { icon: "🌅", title: "絕美日出拍攝點", desc: "朝霧碼頭與出水口是晨拍聖地，清晨湖面常升起一層薄如絲絹的水霧，宛若仙境。" },
+          { icon: "🛶", title: "水上活動預約", desc: "月牙灣是熱門 SUP 立槳與獨木舟活動基地，湖水平穩安全，務必提前透過合格業者預約並穿戴救生衣。" },
+          { icon: "🎟️", title: "套票優惠省很大", desc: "可在高鐵台中站或南投客運購買『日月潭水陸空好行套票』，內含好行來回票、遊艇券、纜車券與單車折扣。" },
+          { icon: "🍵", title: "茶葉品鑑注意", desc: "購買日月潭紅茶時請認明『魚池鄉公所產地證明標章』與產銷履歷，確保買到正宗台茶18號或21號。" }
+        ],
+        faq: [
+          { q: "遊日月潭需要幾天時間？一日遊來得及嗎？", a: "一日遊可挑選『騎向山單車道 + 搭船遊伊達邵 + 吃茶葉蛋』精華重點；若想體驗 SUP 立槳、搭纜車或住宿湖景飯店，強烈建議安排兩天一夜。" },
+          { q: "環潭自行車道全程多長？難度高嗎？", a: "環湖公路全長約 30 公里，有幾段坡度較陡峭，挑戰全程建議使用電輔車（約需 3 - 4 小時）；若只想悠閒拍照，推薦僅騎『水社至向山段』（約 3.4 公里），平緩無階梯。" },
+          { q: "日月潭遊艇班次多嗎？怎麼買票？", a: "平日每 20 - 30 分鐘一班，假日坐滿即發車。可在各碼頭售票亭購買一日票（可無限次往返水社、玄光寺、伊達邵三大碼頭），全票公定約 300 元。" },
+          { q: "日月潭纜車需要另外購票嗎？", a: "是的，遊艇票與纜車票是分開的。若有打算前往九族文化村，可直接購買包含九族門票的套票，該套票已免費附贈日月潭纜車搭乘。" },
+          { q: "從台中高鐵站出發，交通容易嗎？", a: "非常方便！高鐵台中站 1 樓客運轉運站 5 號月台即可搭乘『台灣好行日月潭線 6670』，車程約 85 分鐘直達水社商圈。" },
+          { q: "日月潭晚上有什麼活動嗎？店家幾點關？", a: "伊達邵老街店家約 19:30 陸續打烊，水社商圈餐廳約營業至 20:30。夜間非常適合在湖畔步道散步觀星，享受高山湖泊無光害的寧靜。" }
+        ]
+      },
+
+      "阿里山": {
+        name: "阿里山",
+        enName: "Alishan National Scenic Area",
+        region: "嘉義縣阿里山鄉",
+        badge: "🇹🇼 台灣五大奇景 · 百年森林高山鐵道",
+        slogan: "穿梭千年巨木巨木林海，靜候祝山頂端破曉而出的金黃曙光",
+        heroImage: "https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&w=1600&q=80",
+        intro: "阿里山以日出、雲海、晚霞、森林與高山鐵路『五大奇景』享譽全球。搭乘經典紅色小火車穿梭於千年紅檜巨木群，空氣中瀰漫著濃郁的芬多精與高山茶香，洗滌都會生活的一切疲憊。",
+        metrics: {
+          culture: "9.6 / 10",
+          nature: "10 / 10",
+          food: "8.9 / 10",
+          transit: "8.6 / 10"
+        },
+        meta: {
+          season: "3-4月櫻花季、秋冬雲海楓紅",
+          duration: "建議 2 天 1 夜",
+          target: "登山健行、自然生態、長輩家庭",
+          crowd: "花季人潮眾多，園區步道極開闊"
+        },
+        about: {
+          lead: "漫步在神聖不可侵犯的高山迷霧中，聆聽大自然最深沉的呼吸與呼吸聲。",
+          p1: "阿里山並非單一座山，而是由大塔山、祝山等十八座高山組成的山脈總稱。鄒族先民世居於此，將大塔山視為善靈安息的聖山。日治時期在此發現大片珍貴台灣扁柏與紅檜巨木林，進而建造了世界三大登山鐵道之一的阿里山森林小火車。",
+          p2: "如今園區完整轉型為生態保育與休閒度假勝地，漫步在巨木群棧道上，仰望樹齡超過兩千歲的雄偉神木，令人油然而生對自然的崇敬。",
+          tags: ["五大奇景", "祝山日出", "森林小火車", "巨木群棧道", "高山茶葉"]
+        },
+        highlights: [
+          {
+            name: "祝山與小笠原山日出觀景台",
+            feature: "360度環景 · 絕美雲海旭日",
+            desc: "搭乘清晨觀日小火車直達海拔 2451 公尺的祝山車站，再步行 10 分鐘至小笠原山觀景台，遠眺玉山主峰破曉的金光朝霞。",
+            duration: "建議停留 2 小時",
+            image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "阿里山森林小火車 (林鐵本線/支線)",
+            feature: "百年工藝 · Ｚ字型折返登山鐵道",
+            desc: "世界罕見的登山鐵路，運用螺旋登山路線與之字型折返工法，搭乘經典紅色木造車廂穿梭蓊鬱林間，如同童話列車。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "巨木群棧道 (第一、二期步道)",
+            feature: "兩千歲紅檜神木 · 高濃度芬多精",
+            desc: "全長約 1 公里的平緩高架木棧道，沿途環繞數十株樹齡從 800 至 2300 年的擎天紅檜巨木，令人嘆為觀止。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "姊妹潭與三代木",
+            feature: "翠綠高山池泊 · 枯木逢春奇觀",
+            desc: "兩座天然高山湖泊，潭中設有檜木茅草涼亭相映成趣；鄰近的三代木展現三代檜木同生一處的生命堅韌奇蹟。",
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "奮起湖老街 (順遊景點)",
+            feature: "南台灣九份 · 鐵路便當之鄉",
+            desc: "阿里山林鐵沿線最大的中繼站，老街販售鐵路便當、現烤甜甜圈、草仔粿與生長在海拔 1400 公尺的特有轎篙筍。",
+            duration: "建議停留 2 小時",
+            image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "水山巨木步道",
+            feature: "森林秘境 · 鐵軌舊道漫步",
+            desc: "遠離主遊客區的幽靜步道，沿著昔日水山線停駛鐵道前行，終點矗立著樹齡達 2700 年的水山巨木，清幽寧謐。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        foods: [
+          {
+            name: "奮起湖經典雙主菜鐵路便當",
+            tag: "百年傳統美味",
+            flavor: "以不鏽鋼鐵盒裝盛，招牌滷雞腿搭配軟嫩戰斧排骨、高山轎篙筍與高麗菜，香氣逼人回味無窮。",
+            spot: "推薦位置：奮起湖大飯店或登山食堂"
+          },
+          {
+            name: "阿里山高山烏龍茶 (清香金萱)",
+            tag: "茶界極品",
+            flavor: "高海拔日夜溫差大常年雲霧籠罩，茶葉葉肉肥厚，茶湯金黃甘醇帶有淡雅天然奶香與花果香氣。",
+            spot: "推薦位置：石棹茶區與阿里山茶葉合作社"
+          },
+          {
+            name: "阿里山高山山葵豆腐與山葵香腸",
+            tag: "現磨嗆辣原味",
+            flavor: "引玉山純淨山泉水無污染栽培的真山葵（哇沙米），辛辣溫和香氣馥郁，沾豆腐或佐香腸清爽解膩。",
+            spot: "推薦位置：阿里山森林遊樂區餐廳街"
+          },
+          {
+            name: "現烤丹麥脆皮甜甜圈",
+            tag: "奮起湖排隊點心",
+            flavor: "採用多層丹麥千層麵糰高溫鐵板烘烤，外皮焦糖酥脆香濃，內部層次鬆軟細緻，每日大排長龍。",
+            spot: "推薦位置：奮起湖百年老街旁"
+          }
+        ],
+        itinerary1: [
+          { time: "08:30 - 10:30", type: "上山交通", title: "搭乘台灣好行自嘉義高鐵站直達阿里山園區", desc: "沿阿里山公路台18線蜿蜒而上，沿途窗外從熱帶林過渡到溫帶針葉巨木林，景致多變。" },
+          { time: "11:00 - 13:00", type: "林間漫步", title: "搭沼平線小火車 ➔ 姊妹潭 ➔ 三代木", desc: "走進沼平車站，穿梭於原始檜木林間，欣賞如同翡翠倒映的姊妹潭湖水。" },
+          { time: "13:00 - 14:00", type: "高山午餐", title: "阿里山遊客區享用高山蔬菜火鍋與山葵料理", desc: "品嚐清脆鮮甜的阿里山高山高麗菜、高山茶油雞與現磨山葵佐手工豆腐。" },
+          { time: "14:00 - 16:30", type: "神木巡禮", title: "巨木群棧道 ➔ 阿里山神木遺址 ➔ 神木車站小火車", desc: "漫步在巨木棧道瞻仰數十株千年紅檜，聆聽森林風聲，最後自神木車站搭乘紅色火車返回阿里山站。" },
+          { time: "17:00 - 18:30", type: "晚霞雲海", title: "慈雲寺觀景台觀賞波瀾壯闊晚霞與雲海", desc: "慈雲寺是觀賞阿里山晚霞的最佳名所，紅霞映照滾滾雲海如波濤翻滾，隨後搭車賦歸。" }
+        ],
+        itinerary2: [
+          { time: "Day 1", type: "漫遊森林", title: "奮起湖老街吃便當 ➔ 阿里山森林遊憩區巨木棧道 ➔ 宿園區飯店", desc: "白天走訪奮起湖老街吃便當，午後在巨木林深呼吸，夜晚入住園區飯店，在無光害林間仰望璀璨銀河。" },
+          { time: "Day 2", type: "晨曦破曉", title: "清晨搭祝山觀日火車 ➔ 小笠原山看玉山日出 ➔ 水山巨木步道", desc: "凌晨 04:30 搭小火車前往小笠原山迎接破曉日出，隨後走訪清幽的水山巨木步道，悠閒下午下山。" }
+        ],
+        transit: [
+          { icon: "🚗", title: "自行開車", desc: "國道3號下中埔交流道接台18線阿里山公路，往山上方向行駛約 2 小時即可抵達阿里山森林遊樂區大門。" },
+          { icon: "🚄", title: "高鐵/台鐵轉公車", desc: "『嘉義高鐵站2號月台』搭乘台灣好行阿里山A線 (7329)；或『嘉義火車站前站』搭乘阿里山B線 (7322)，約 2.5 小時抵達園區。" },
+          { icon: "🚂", title: "阿里山森林鐵路", desc: "林鐵本線（嘉義至阿里山）已全線通車，車位熱門需提前上網預訂。園區內部設有祝山線（觀日專車）、沼平線、神木線等接駁支線。" },
+          { icon: "🚌", title: "園區電動遊園車", desc: "園區大門至沼平車站、祝山觀日站設有環保綠能電動接駁車，每 10-15 分鐘一班，長輩通行輕鬆無負擔。" },
+          { icon: "🚶", title: "步道動線導引", desc: "園區步道規劃極為完善，以木棧道為主，步道平緩好走，沿途皆設有清晰里程標示與生態解說牌。" },
+          { icon: "🅿️", title: "停車資訊", desc: "園區大門內設有收費停車場，櫻花季與連續假期車位易滿，屆時台18線公路旁提供免費接駁車接駁入園。" }
+        ],
+        tips: [
+          { icon: "🧥", title: "高山保暖不可少", desc: "阿里山海拔約 2200 公尺，年均溫僅 10-15 度，日夜溫差極大。清晨看日出氣溫常低於 8 度，必備厚保暖防風外套、毛帽與圍巾。" },
+          { icon: "🎫", title: "日出火車票預購", desc: "祝山觀日列車每日行駛時間依日出時間調整，強烈建議前一天下午 13:00-16:30 在阿里山車站 2 樓預先購妥車票。" },
+          { icon: "🌸", title: "櫻花季與花期", desc: "每年 3 月中旬至 4 月中旬為阿里山櫻花季，染井吉野櫻、普賢象櫻與昭和櫻遍植全區，紅色小火車穿梭櫻花樹下是世紀經典畫面。" },
+          { icon: "💊", title: "高山症預防叮嚀", desc: "山區海拔逾兩千公尺，少數體質敏感者可能出現輕微頭暈，步伐宜放慢多喝溫水，勿進行激烈奔跑。" },
+          { icon: "🌧️", title: "防雨防滑準備", desc: "午後山區常起濃霧或陣雨，森林步道部分路面微濕，建議攜帶雨具並穿著刻紋深的防滑健行鞋。" },
+          { icon: "🏨", title: "住宿務必提前訂", desc: "園區內飯店數量有限（阿里山賓館、阿里山閣等），賞櫻期與週末假日通常提前 2-3 個月客滿，請提早規劃。" }
+        ],
+        faq: [
+          { q: "阿里山日出幾點開？小火車幾點發車？", a: "日出時間隨季節從清晨 05:15 到 06:40 不等。園區會在每日下午 16:30 於官網、阿里山車站與各飯店大廳公佈次日祝山觀日火車的精確開車時間。" },
+          { q: "從嘉義市區到阿里山需要多久時間？會暈車嗎？", a: "搭公車或開車約需 2 到 2.5 小時。阿里山公路（台18線）彎道較多，容易暈車的旅客建議出發前半小時服用暈車藥，並盡量坐在車輛前排。" },
+          { q: "阿里山門票多少錢？有優惠嗎？", a: "一般全票為 300 元，搭乘大眾運輸工具（如台灣好行客運或小火車）憑票根可享優惠票價 150 元；線上購買森林電子門票通常也有優惠促銷。" },
+          { q: "如果沒買到祝山小火車票，還能看日出嗎？", a: "可以！您可以選擇自阿里山旅客中心搭乘電動遊園車至祝山站，或是步行沿祝山觀日步道走上山（步程約需 45 - 60 分鐘）。" },
+          { q: "阿里山適合帶長輩或小孩去嗎？步道好走嗎？", a: "非常適合！園區內有規劃良善的無障礙高架木棧道與電動接駁車，若長輩體力有限，可搭接駁車至定點漫步短程步道，充分享受森林芬多精。" },
+          { q: "一天之內玩阿里山和奮起湖來得及嗎？", a: "若自行開車或搭乘配合班次的大眾運輸是可以的。建議早上去阿里山走巨木群，午後下山順遊奮起湖吃便當逛老街，傍晚再返回嘉義。" }
+        ]
+      },
+
+      "墾丁": {
+        name: "墾丁",
+        enName: "Kenting National Park",
+        region: "屏東縣恆春鎮",
+        badge: "🇹🇼 台灣南國渡假天堂 · 蔚藍海岸與珊瑚礁",
+        slogan: "徜徉南國艷陽與蔚藍海浪，點燃熱情奔放的沙灘夏日時光",
+        heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80",
+        intro: "墾丁國家公園坐落台灣最南端的恆春半島，三面環海，坐擁豐富的裙礁海岸、細緻金黃沙灘與熱帶季風林。不管是水上衝浪潛水、騎著電動機車迎風漫遊沿海公路，或入夜後探索熱鬧喧囂的墾丁大街，處處充滿盛夏熱情。",
+        metrics: {
+          culture: "8.8 / 10",
+          nature: "9.8 / 10",
+          food: "9.3 / 10",
+          transit: "8.7 / 10"
+        },
+        meta: {
+          season: "4-10月玩水旺季、秋冬避寒衝浪",
+          duration: "建議 2 - 3 天",
+          target: "年輕朋友、情侶度假、親子玩水",
+          crowd: "暑假與春假最熱鬧，冬季寧靜宜人"
+        },
+        about: {
+          lead: "陽光、沙灘、比基尼與珊瑚礁生態，台灣最具熱帶島嶼風情的南境之地。",
+          p1: "墾丁因清同治年間招募廣東潮州一帶客家壯丁來此開墾，故名『墾丁』。這裡擁有台灣唯一的熱帶海岸氣候，造就了發育完整的裙狀珊瑚礁、崩崖奇觀以及繁茂的原生熱帶森林生態。",
+          p2: "著名電影《海角七號》與《少年Pi的奇幻漂流》皆在此取景拍攝。從白沙灣的夕陽浪濤，到鵝鑾鼻純白燈塔指引台灣最南端海域，墾丁永遠洋溢著青春與浪花交織的浪漫色彩。",
+          tags: ["熱帶沙灘", "水上水肺潛水", "鵝鑾鼻燈塔", "墾丁大街夜市", "龍磐草原星空"]
+        },
+        highlights: [
+          {
+            name: "鵝鑾鼻燈塔與最南點地標",
+            feature: "東亞之光 · 台灣最南端海天一色",
+            desc: "純白壯麗的武裝燈塔，坐落在碧草如茵的大公園中，步行數分鐘可抵達台灣最南點地標，遠眺巴士海峽與太平洋交會。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "白沙灣海灘",
+            feature: "李安少年Pi取景地 · 細白貝殼砂",
+            desc: "長達數百公尺的潔白貝殼砂灘，海水湛藍清澈且浪況平緩，是游泳、香蕉船水上活動與看夕陽下沉大海的浪漫勝地。",
+            duration: "建議停留 2 小時",
+            image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "龍磐公園與崩崖地形",
+            feature: "遼闊草原 · 無敵斷崖海景與觀星",
+            desc: "由石灰岩溶蝕形成的崩崖地形，站在崖頂飽覽太平洋壯闊波濤，毫無光害的夜空更是欣賞南十字星與流星雨的聖地。",
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "後壁湖漁港與浮潛秘境",
+            feature: "超值百元海鮮生魚片 · 珊瑚礁潛點",
+            desc: "恆春半島最大漁港，生魚片厚切大份且價格超親民；港外的出水口與軟珊瑚保護區更是全台首屈一指的初學者浮潛天堂。",
+            duration: "建議停留 2.5 小時",
+            image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "墾丁大街夜市",
+            feature: "南島熱帶夜生活 · 異國調酒與街頭美食",
+            desc: "夜幕降臨後搖身一變為充滿熱帶異國風情的步行街，雲集泰式煎餅、炸生蠔、原住民烤肉與露天調酒吧，熱鬧非凡。",
+            duration: "建議停留 2 小時",
+            image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "恆春古城與海角七號阿嘉的家",
+            feature: "全台保留最完整古城牆 · 懷舊文青",
+            desc: "擁有東、西、南、北四座完整古城門與老街磚牆，走訪《海角七號》男主角阿嘉的家，品嚐在地綠豆蒜與在地文創。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        foods: [
+          {
+            name: "後壁湖厚切綜合生魚片",
+            tag: "超狂 CP 值湖鮮",
+            flavor: "旗魚、鮭魚、鮪魚現撈現切，肉質鮮甜肥美油脂豐潤，大盤只要百元起，是遊墾丁必吃狂暴海味。",
+            spot: "推薦位置：後壁湖漁會大樓內餐廳（邱家生魚片/阿興生魚片）"
+          },
+          {
+            name: "車城 / 恆春古早味綠豆蒜",
+            tag: "恆春半島百年甜品",
+            flavor: "將去皮綠豆蒸熟後加入黑糖與桂圓熬煮勾芡，搭配現煮粉條與碎冰，冷熱皆宜，香濃滑順消暑解渴。",
+            spot: "推薦位置：阿伯綠豆蒜 / 正黃家綠豆蒜"
+          },
+          {
+            name: "港口茶與飛魚乾",
+            tag: "海風洗禮的在地名產",
+            flavor: "台灣最南端且海拔最低的茶區，承受海風吹拂帶有些許海鹽礦物質感，搭配炭烤香酥飛魚風味絕佳。",
+            spot: "推薦位置：滿州鄉港口村茶行"
+          },
+          {
+            name: "南洋風味泰式香蕉煎餅與調酒",
+            tag: "墾丁大街排隊異國風",
+            flavor: "酥脆煎餅包裹新鮮香蕉片淋上香濃煉乳與巧克力醬，搭配一杯微醺熱帶水果調酒，感受南國浪漫放鬆感。",
+            spot: "推薦位置：墾丁大街中段攤位"
+          }
+        ],
+        itinerary1: [
+          { time: "10:00 - 12:00", type: "海洋體驗", title: "後壁湖浮潛探索彩色珊瑚礁與熱帶魚", desc: "在合格教練帶領下穿著水母衣與呼吸管，近距離觀察美麗的小丑魚與海底珊瑚群。" },
+          { time: "12:00 - 13:30", type: "肥美海味", title: "後壁湖漁港享用爆量厚切生魚片與海鮮", desc: "大啖超高CP值綜合生魚片、炒海瓜子、鹽烤倒吊魚與鮮蚵湯，補充滿滿體力。" },
+          { time: "14:00 - 16:30", type: "南端打卡", title: "鵝鑾鼻燈塔公園漫步 ➔ 龍磐公園壯麗崩崖", desc: "在純白燈塔前拍照打卡，接著驅車前往龍磐草原迎著太平洋強勁海風俯瞰無垠蔚藍大海。" },
+          { time: "16:30 - 18:30", type: "夕陽海灘", title: "白沙灣踏浪賞落日晚霞", desc: "光著腳丫漫步在細膩貝殼砂上，欣賞金色夕陽緩緩沒入台灣海峽的絕美暮色。" },
+          { time: "19:00 - 21:00", type: "夜市狂歡", title: "墾丁大街夜市品嚐街頭美食與熱帶酒吧", desc: "換上夾腳拖漫步熱鬧大街，品嚐原木烤肉、地瓜球與泰式煎餅，享受南島無拘無束的夏夜氛圍。" }
+        ],
+        itinerary2: [
+          { time: "Day 1", type: "沙灘與海洋", title: "抵達恆春吃綠豆蒜 ➔ 南灣水上活動 ➔ 白沙灣夕陽 ➔ 墾丁大街夜宿", desc: "中午抵達恆春古城散策，午後在南灣或白沙灣戲水衝浪，夜間沉醉在熱鬧的墾丁大街市集。" },
+          { time: "Day 2", type: "自然景觀", title: "鵝鑾鼻燈塔 ➔ 龍磐公園看海 ➔ 佳樂水地質公園 ➔ 恆春古城買伴手禮", desc: "沿著東海岸台26線一路暢遊，欣賞大自然鬼斧神工的風化奇石與遼闊草原，傍晚踏上歸途。" }
+        ],
+        transit: [
+          { icon: "🚗", title: "自行開車", desc: "國道3號行駛至南州交流道下，沿台1線接台26線往南直行，經枋寮、車城、恆春即可直達墾丁大街，車程約 2 小時。" },
+          { icon: "🚄", title: "高鐵轉墾丁快線", desc: "搭乘高鐵至『左營站』，2號出口下樓搭乘『墾丁快線 (9189)』，約 2 小時即可直達恆春轉運站、南灣與墾丁大街。" },
+          { icon: "🛵", title: "電動車 / 機車租賃", desc: "墾丁景點分布較廣，當地無須駕照之電動機車租賃非常普及，續航力約 40-50 公里，是吹海風自由行的最佳方式。" },
+          { icon: "🚌", title: "墾丁街車 (8888)", desc: "屏東客運提供橘線、藍線、綠線街車，行經海生館、鵝鑾鼻、恆春古城等熱門景點，可在轉運站購買一日票。" },
+          { icon: "🚕", title: "包車一日遊", desc: "恆春當地提供合法觀光計程車或九人座包車服務，適合不想自行開車或帶長輩親子的旅客，行程自由彈性。" },
+          { icon: "🅿️", title: "停車資訊", desc: "鵝鑾鼻公園、白沙灣與墾丁森林遊樂區皆附設公有大型收費停車場；墾丁大街周邊夜間建議停放公有停車場避免違規。" }
+        ],
+        tips: [
+          { icon: "☀️", title: "防曬抗紫外線", desc: "恆春半島陽光極為烈日，從事戶外與水上活動務必備妥防曬衣物、太陽眼鏡、寬帽，並請選用海洋友善防曬乳。" },
+          { icon: "💨", title: "秋冬落山風提醒", desc: "每年 10 月至隔年 3 月盛行強勁落山風，風力有時可達輕颱等級，騎乘電動車時需特別握緊龍頭注意側風。" },
+          { icon: "🌊", title: "海浪暗流警示", desc: "海邊遊玩請遵守沙灘插旗警示（紅旗切勿下水），切勿前往未開放之危險水域，離岸流暗藏危險需注意。" },
+          { icon: "🤿", title: "水上活動找合格教練", desc: "參加浮潛或水肺體驗，務必確認業者具備合法營業執照、水域活動保險與救生員合格執照。" },
+          { icon: "🦟", title: "防蚊防蟲措施", desc: "前往墾丁森林遊樂區或社頂自然公園等山林步道時，建議噴灑防蚊液穿著薄長褲防叮咬。" },
+          { icon: "🐬", title: "國立海生館順遊", desc: "若遇下雨或炎熱中午，位在車城的『車城國立海洋生物博物館』是全台最棒的室內冷氣避暑親子景點！" }
+        ],
+        faq: [
+          { q: "去墾丁一定要會開車或騎車嗎？沒交通工具方便嗎？", a: "墾丁景點距離拉得較長，開車或騎機車（或免駕照電動自行車）最自由。若不開車，可利用『墾丁快線』抵達後搭配『墾丁街車』或預約一日包車。" },
+          { q: "後壁湖生魚片真的那麼便宜嗎？如何避免踩雷？", a: "是真的！後壁湖漁港市場內的知名攤位（如阿興、邱家）長年以百元超量生魚片聞名。建議避開正中午 12:00 用餐尖峰以減少排隊時間。" },
+          { q: "秋冬去墾丁合適嗎？還能玩水嗎？", a: "墾丁秋冬平均氣溫仍在 22-26 度，非常溫暖舒適，避開了酷暑與擁擠人潮。若遇落山風沙灘較大，但潛水業者通常會挑選背風水域依然可以浮潛。" },
+          { q: "墾丁玩幾天最剛好？推薦住哪一區？", a: "最推薦安排 3 天 2 夜。喜歡熱鬧出門就吃美食推薦住『墾丁大街』；想要安靜度假海景第一排推薦『船帆石』或『南灣』；文青復古老屋風推薦住『恆春古城』。" },
+          { q: "帶小朋友去墾丁有推薦什麼景點？", a: "超級推薦『國立海洋生物博物館（海生館）』，有超大企鵝館、海底隧道與小白鯨；另外『鹿境梅花鹿生態園區』可近距離餵小鹿與水豚，小朋友極度喜愛。" },
+          { q: "墾丁國家公園進入需要門票嗎？", a: "墾丁大部分自然景觀（如白沙灣、龍磐公園、南灣、船帆石）皆為免費開放；僅『鵝鑾鼻公園』與『墾丁森林遊樂區』等特定景區需購買銅板價清潔門票。" }
+        ]
+      },
+
+      "淡水": {
+        name: "淡水",
+        enName: "Tamsui Historic Riverside",
+        region: "新北市淡水區",
+        badge: "🇹🇼 台灣絕美河畔落日 · 浪漫異國百年古蹟",
+        slogan: "漫步金色水岸迎著河風，在紅毛城古堡前靜候淡江夕照融金",
+        heroImage: "https://images.unsplash.com/photo-1508247967583-7d982ea01526?auto=format&fit=crop&w=1600&q=80",
+        intro: "淡水坐落於淡水河出海口，曾是北台灣最大的國際貿易港口，交融著荷蘭、西班牙、清領與日治的豐富歷史建築。搭乘台北捷運直達，漫步金色水岸自行車道，品嚐傳統阿給與鐵蛋，在漁人碼頭情人橋上欣賞被譽為台灣八景之一的淡水夕照。",
+        metrics: {
+          culture: "9.7 / 10",
+          nature: "9.2 / 10",
+          food: "9.5 / 10",
+          transit: "10 / 10"
+        },
+        meta: {
+          season: "四季皆宜，傍晚夕陽時分最迷人",
+          duration: "建議 1 天 (半日或一日遊)",
+          target: "情侶散步、親子共遊、歷史愛好者",
+          crowd: "假日午後遊客眾多，捷運班次極密集"
+        },
+        about: {
+          lead: "淡水河畔的金色記憶，從大航海時代的軍事城堡到近代文藝浪漫水岸。",
+          p1: "淡水舊稱『滬尾』，早自 17 世紀起即是列強角逐台灣的咽喉重地，留下了紅毛城、前清淡水關稅務司官邸（小白宮）等西洋建築群。馬偕博士在此創辦偕醫館與牛津學堂，為這座港鎮注入了深厚的人文醫學與教育光輝。",
+          p2: "現代的淡水則是台北人洗滌塵囂的後花園。沿著淡水河畔漫步，夕陽餘暉將觀音山與河水染成一片暖金，街頭藝人的歌聲隨風飄揚，充滿溫柔而悠閒的詩意。",
+          tags: ["淡水夕照", "紅毛城古蹟", "金色水岸", "阿給魚丸", "漁人碼頭情人橋"]
+        },
+        highlights: [
+          {
+            name: "國定古蹟紅毛城與英國領事官邸",
+            feature: "三百年歷史古堡 · 紅磚拱圈美學",
+            desc: "屹立三百餘年的軍事古堡，主堡朱紅外牆雄偉堅固，相鄰的英國副領事官邸洋溢精緻維多利亞風格紅磚拱廊，是拍婚紗經典場景。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1543731068-7e0f5beff43a?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "淡水漁人碼頭與情人橋",
+            feature: "白色單塔斜張橋 · 世紀夕陽絕景",
+            desc: "著名的流線型風帆斜張橋，入夜後投射七彩繽紛光雕，走在木棧道上迎著海風眺望夕陽沈入台灣海峽，浪漫指數破表。",
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "淡水老街商圈 (中正路與公明街)",
+            feature: "傳統美食 · 百年老舖巡禮",
+            desc: "依傍淡水河延伸的繁華商圈，排隊名店林立，阿給、鐵蛋、魚酥、酸梅湯香氣撲鼻，街巷兩側還保存著許多紅磚日式街屋。",
+            duration: "建議停留 2 小時",
+            image: "https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "小白宮 (前清淡水關稅務司官邸)",
+            feature: "西班牙殖民地白堊建築 · 迴廊拱門",
+            desc: "通體純白的殖民地式迴廊建築，面迎淡水河波光，涼風徐徐吹過挑高落地拱門，是文青網美最愛的秘密拍照打卡點。",
+            duration: "建議停留 45 分鐘",
+            image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "海關碼頭古蹟園區",
+            feature: "洋樓與紅磚倉庫 · 河畔觀夕秘境",
+            desc: "清領時期全台三大海關之一，擁有珍貴的重力式砌石碼頭與兩座大型紅磚倉庫，常設互動藝術展覽，河岸草皮觀夕視野開闊。",
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1508247967583-7d982ea01526?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: "八里左岸 (渡輪順遊)",
+            feature: "搭船橫渡淡水河 · 八里雙胞胎與孔雀蛤",
+            desc: "自淡水渡船頭搭乘 10 分鐘渡輪橫渡至對岸八里，騎乘平緩自行車道探訪十三行博物館與挖子尾紅樹林自然保護區。",
+            duration: "建議停留 2 小時",
+            image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        foods: [
+          {
+            name: "正宗淡水老牌阿給",
+            tag: "淡水傳奇庶民小吃",
+            flavor: "將油豆腐挖空塞入炒香冬粉，以新鮮魚漿封口蒸熟，淋上靈魂甜辣秘製黑甜醬，吸飽湯汁鹹甜濃郁。",
+            spot: "推薦位置：真理街文化阿給 / 原創老牌阿給"
+          },
+          {
+            name: "淡水原味魚丸湯與阿婆鐵蛋",
+            tag: "百年工藝手路菜",
+            flavor: "以鯊魚肉打成彈牙魚丸內包肉餡湯汁鮮美；鐵蛋經獨家五香中藥反覆烘烤滷製，口感無比扎實越嚼越香。",
+            spot: "推薦位置：可口魚丸與中正路老店"
+          },
+          {
+            name: "洪媽酸梅湯與古早味現烤蛋糕",
+            tag: "清涼生津解膩首選",
+            flavor: "天然古法烏梅與仙楂熬製，生津止渴去油解膩；現烤古早味起司蛋糕剛出爐香氣撲鼻，口感綿密如同雲朵。",
+            spot: "推薦位置：淡水渡船頭周邊"
+          },
+          {
+            name: "現炸魚酥與許義蝦酥",
+            tag: "酥脆追劇零嘴",
+            flavor: "將新鮮魚肉連骨打漿炸至金黃酥脆，每一口都是卡滋卡滋的濃郁海味，配啤酒或泡湯皆是絕品。",
+            spot: "推薦位置：中正路許義魚酥"
+          }
+        ],
+        itinerary1: [
+          { time: "11:00 - 12:30", type: "捷運抵達", title: "搭捷運淡水信義線抵達淡水站 ➔ 漫步老街", desc: "自台北市區搭紅線捷運直達終點淡水站，出站沿著金色水岸步道慢慢散步至老街。" },
+          { time: "12:30 - 13:30", type: "經典午餐", title: "真理街品嚐正宗阿給與可口魚丸湯", desc: "登上真理街坡道，享用發源地的正牌阿給配上一碗熱氣騰騰的肉餡魚丸湯。" },
+          { time: "13:30 - 15:30", type: "古蹟巡禮", title: "參觀小白宮 ➔ 紅毛城 ➔ 海關碼頭文創園區", desc: "一票暢遊三大代表性國定古蹟，在英國領事官邸迴廊拍照，感受百年開港歷史風情。" },
+          { time: "15:30 - 17:00", type: "渡輪輕旅", title: "搭渡輪橫渡至八里左岸騎單車品嚐雙胞胎", desc: "在淡水渡船頭使用悠遊卡搭船，至八里吃剛出鍋香酥甜甜圈與雙胞胎。" },
+          { time: "17:00 - 18:30", type: "黃金夕陽", title: "搭乘輕軌或客運前往漁人碼頭情人橋賞夕陽", desc: "在白色情人橋上靜候淡水八景之首『淡江夕照』，看金黃烈日沉入海平線，隨後搭車賦歸。" }
+        ],
+        itinerary2: [
+          { time: "Day 1", type: "古都浪漫", title: "淡水老街 ➔ 紅毛城古蹟群 ➔ 漁人碼頭情人橋光雕 ➔ 入住福容大飯店", desc: "白天細品異國風情古蹟建築，傍晚在郵輪外觀的福容大飯店住宿，悠閒享用溫泉與海景晚餐。" },
+          { time: "Day 2", type: "秘境自然", title: "搭淡海輕軌尋找幾米公共藝術 ➔ 淺水灣海景咖啡廳", desc: "搭乘全台首條輕軌沿途欣賞幾米童話雕塑，午後轉往三芝淺水灣露天咖啡館放空聽濤。" }
+        ],
+        transit: [
+          { icon: "🚇", title: "台北捷運 (紅線)", desc: "搭乘台北捷運『淡水信義線（紅線）』至終點站『淡水站』，自台北車站出發僅需 35 分鐘，免去塞車煩惱。" },
+          { icon: "🚊", title: "淡海輕軌", desc: "於捷運紅樹林站可轉乘淡海輕軌綠山線，探訪幾米車站與沙崙沙灘，亦可搭乘藍海線直達漁人碼頭。" },
+          { icon: "🚢", title: "藍色公路渡輪", desc: "淡水渡船頭設有往返『八里渡船頭』與『漁人碼頭』之觀光渡輪，可直接刷悠遊卡或一卡通，單程約 10-15 分鐘。" },
+          { icon: "🚌", title: "紅26路公車", desc: "自淡水捷運站前公車站搭乘『紅26路公車』，班次極為密集（約5分鐘一班），沿途停靠紅毛城、海關碼頭與漁人碼頭。" },
+          { icon: "🚲", title: "YouBike 水岸單車", desc: "捷運站旁設有大型 YouBike 租借站，沿著平緩的淡水金色水岸自行車道一路騎往紅毛城或漁人碼頭非常愜意。" },
+          { icon: "🅿️", title: "停車資訊", desc: "淡水老街假日周邊嚴格實施車流管制，建議停放淡水捷運地下停車場，再步行或租乘單車遊歷。" }
+        ],
+        tips: [
+          { icon: "🌅", title: "黃金時刻抓準", desc: "淡水夕陽四季日落時間不同（夏季約 18:30-18:45，冬季約 17:15-17:30），建議提前 45 分鐘抵達觀賞點卡位。" },
+          { icon: "🎫", title: "古蹟聯票好划算", desc: "新北市民憑身分證可免費參觀紅毛城、小白宮與滬尾礮臺；外縣市遊客可購買三館聯票僅需 80 元。" },
+          { icon: "👟", title: "休閒步行穿著", desc: "真理街與小白宮一帶多為上坡斜坡道，建議穿著輕便好走的平底步鞋，推嬰兒車者可利用平坦路線繞行。" },
+          { icon: "💨", title: "河邊防風外套", desc: "淡水河口海風較強，尤其是秋冬時節氣溫常比台北市區低 2-3 度，傍晚在水岸散步務必攜帶薄風衣外套防受涼。" },
+          { icon: "📸", title: "IG 打卡最佳視角", desc: "紅毛城二樓英國領事官邸拱圈長廊；小白宮西班牙純白迴廊；海關碼頭草皮以觀音山為背景的黃昏落日剪影。" },
+          { icon: "🐟", title: "伴手禮防潮撇步", desc: "購買魚酥或鐵蛋伴手禮拆封後需盡速食用，未吃完務必封緊夾鏈袋避免海風濕氣影響其酥脆度。" }
+        ],
+        faq: [
+          { q: "從台北市區怎麼去淡水最快最方便？", a: "最推薦直接搭乘台北捷運淡水信義線（紅線）直達淡水終點站，免換車且不怕尖峰時段塞車，出站即是金色水岸老街入口。" },
+          { q: "去淡水半天玩得完嗎？需要排一整天嗎？", a: "半天可逛『淡水老街吃小吃 + 參觀紅毛城 + 岸邊看夕陽』；若想多去小白宮、搭船去八里、或到漁人碼頭散步，建議安排整整一天的悠閒行程。" },
+          { q: "淡水老街店家平日有開嗎？還是只有假日開？", a: "知名小吃老店（如阿給、魚丸、酸梅湯、鐵蛋等）平日皆有正常營業；但平日店家打烊時間較早（約 19:00 前後），假日會熱鬧到 21:00 左右。" },
+          { q: "紅毛城需要收門票嗎？新北市民有優惠嗎？", a: "全票為 80 元（一張票可同天參觀紅毛城、小白宮與滬尾礮臺）；設籍新北市之市民出示身分證即可享『完全免費』入場！" },
+          { q: "八里跟淡水之間怎麼往返？渡輪可以刷悠遊卡嗎？", a: "兩岸由『順風航業』渡輪對開，航程僅需約 7-10 分鐘，班次密集，可以直接刷悠遊卡、一卡通感應扣款，非常方便。" },
+          { q: "漁人碼頭跟淡水老街離得遠嗎？怎麼去最好？", a: "兩地相距約 4.5 公里。最推薦搭乘班次極多的『紅26路公車』約 15 分鐘抵達；也可在老街渡船頭搭乘渡輪直達漁人碼頭，沿途還可欣賞海上風光。" }
+        ]
+      }
+    };
+
+    // --- Dynamic AI Heuristic Generator for Any Taiwanese Spot ---
+    function generateSmartSpot(query) {
+      const q = query.trim();
+      // Check exact match or partial match in database
+      for (const key in SPOTS_DB) {
+        if (q.includes(key) || key.includes(q)) {
+          return SPOTS_DB[key];
+        }
+      }
+
+      // Keyword categories detection
+      const isMountain = /(山|峰|嶺|谷|森林|步道|瀑布|林|溪|自然|雪|尖)/.test(q);
+      const isSea = /(海|島|嶼|灣|港|灘|礁|漁|濱|浪)/.test(q);
+      const isLake = /(湖|潭|池|埤|水庫)/.test(q);
+      const isOldTown = /(老街|古都|古蹟|寺|宮|廟|堡|鎮|坊|村|城|巷)/.test(q);
+      const isNightMarket = /(夜市|美食|商圈|市場|小吃)/.test(q);
+      const isHotspring = /(溫泉|湯|冷泉)/.test(q);
+
+      let themeBadge = "🇹🇼 台灣探索推薦地標 · AI 智能定制一頁式指南";
+      let themeSlogan = `走訪${q}的獨特風土人文，發現台灣土地深邃美好的旅遊脈動`;
+      let heroImg = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80";
+
+      if (isMountain) {
+        themeBadge = "🌲 台灣綠意山林秘境 · 芬多精森呼吸";
+        themeSlogan = `漫遊${q}雲嶺仙境，在青翠山巒與林道清風中找回內心平靜`;
+        heroImg = "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80";
+      } else if (isSea) {
+        themeBadge = "🌊 台灣蔚藍海岸線 · 浪花與日落之美";
+        themeSlogan = `佇立${q}蔚藍岬角，聽海浪與微風低語，擁抱燦爛海島風情`;
+        heroImg = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
+      } else if (isLake) {
+        themeBadge = "⛵ 台灣水色明珠 · 湖畔慢活休閒";
+        themeSlogan = `泛舟${q}碧波琉璃水色，在倒映的青山與晨嵐中漫享歲月靜好`;
+        heroImg = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80";
+      } else if (isOldTown) {
+        themeBadge = "🏛️ 台灣百年風華聚落 · 歷史古蹟走讀";
+        themeSlogan = `穿梭${q}紅磚古厝巷弄，品讀歲月沉澱的老故事與職人溫度`;
+        heroImg = "https://images.unsplash.com/photo-1543731068-7e0f5beff43a?auto=format&fit=crop&w=1600&q=80";
+      } else if (isHotspring) {
+        themeBadge = "♨️ 台灣暖心美人名湯 · 舒心泉療時光";
+        themeSlogan = `沉浸${q}氤氳白磺暖泉，在氤氳熱氣中徹底釋放都會身心壓力`;
+        heroImg = "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1600&q=80";
+      }
+
+      return {
+        name: q,
+        enName: `${q} Scenic Destination`,
+        region: "台灣在地經典景點",
+        badge: themeBadge,
+        slogan: themeSlogan,
+        heroImage: heroImg,
+        intro: `${q}是台灣深受旅人喜愛的名勝之一，擁有令人驚豔的在地自然景觀與純樸深厚的人文底蘊。在這裡，您可以遠離都市喧囂，深刻體驗台灣這座美麗之島（Formosa）獨一無二的風情魅力。`,
+        metrics: {
+          culture: "9.3 / 10",
+          nature: "9.5 / 10",
+          food: "9.2 / 10",
+          transit: "8.9 / 10"
+        },
+        meta: {
+          season: "四季皆宜 (依季節各有迷人風貌)",
+          duration: "建議 1 - 2 天深度慢遊",
+          target: "好友共遊、家庭親子、文青慢活愛好者",
+          crowd: "平假日皆宜，早晨與傍晚光線最佳"
+        },
+        about: {
+          lead: `探索${q}的歷史脈絡與自然地理，感受時光淬鍊出的獨特在地光采。`,
+          p1: `${q}承載了台灣豐富的歷史開拓痕跡與獨特的地貌特徵。歷經時代更迭，這裡始終保持著迷人的生活步調與在地生命力，融合了傳統信仰、在地聚落工藝與大自然的恩賜。`,
+          p2: `漫步於${q}，不管是隨意穿梭在充滿人情味的在地街道，或是登上視野開闊的制高點遠眺連綿風光，處處都能捕捉到令人心動的旅行瞬間與在地故事。`,
+          tags: ["在地人文", "自然景致", "私房打卡點", "經典小吃", "漫活漫遊"]
+        },
+        highlights: [
+          {
+            name: `${q}核心地標觀景區`,
+            feature: "代表景致 · 經典必訪",
+            desc: `造訪${q}最核心的地標區域，全方位飽覽周邊最具象徵性的山水地貌與聚落全景。`,
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1508247967583-7d982ea01526?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: `${q}歷史人文老街步道`,
+            feature: "聚落散策 · 職人工藝",
+            desc: `走入深具年代感的老街與石板小徑，探尋在地老店、百年古厝與手作特色紀念品店。`,
+            duration: "建議停留 1.5 小時",
+            image: "https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: `${q}自然景觀生態廊道`,
+            feature: "綠意環抱 · 鮮氧身心療癒",
+            desc: `沿著規劃完善的觀景棧道漫步，呼吸清新純淨的自然芬多精，沿途植物與鳥鳴相伴。`,
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80"
+          },
+          {
+            name: `${q}日落夕陽打卡秘境`,
+            feature: "黃金時刻 · 浪漫落日倒影",
+            desc: `攝影愛好者推崇的拍照取景點，每逢黃昏金黃落日灑落大地，光影變幻美不勝收。`,
+            duration: "建議停留 1 小時",
+            image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80"
+          }
+        ],
+        foods: [
+          {
+            name: `${q}在地招牌風味料理`,
+            tag: "名產必吃",
+            flavor: `選用周邊產地嚴選食材手作烹調，將${q}特有風味融合傳統台菜工法，鮮香甘醇令人垂涎。`,
+            spot: `推薦位置：${q}主要商圈老字號餐廳`
+          },
+          {
+            name: `${q}特色手工古早味小吃`,
+            tag: "傳承數十年好手藝",
+            flavor: "堅持遵循古法現做，外皮Q彈口感扎實，搭配特調醬汁香氣四溢，每逢假日排隊人潮不絕。",
+            spot: `推薦位置：${q}老街核心排隊名店`
+          },
+          {
+            name: `${q}嚴選茶飲與時令鮮果點心`,
+            tag: "清涼解渴消暑",
+            flavor: "選用台灣在地好茶現萃，搭配在地特色果乾或手工甜餅，是漫遊旅途中最佳解乏下午茶。",
+            spot: `推薦位置：${q}景觀咖啡茶坊`
+          }
+        ],
+        itinerary1: [
+          { time: "09:30 - 11:30", type: "悠閒出發", title: `抵達${q}與核心地標探索`, desc: `早晨抵達${q}，把握舒適氣溫先前往地標觀景區，享受人潮較少時的靜謐風貌。` },
+          { time: "11:30 - 13:30", type: "午間饗宴", title: `品嚐${q}在地招牌美食與排隊點心`, desc: `深入在地巷弄老店，享用豐富的在地特色料理與傳承古早味小吃。` },
+          { time: "13:30 - 15:30", type: "文化散策", title: `漫步${q}歷史人文街區與文創小店`, desc: `走訪歷史建築與特色手作坊，挑選富含當地文化的伴手禮品。` },
+          { time: "15:30 - 17:30", type: "自然晚霞", title: `前往景觀秘境觀賞傍晚夕照金芒`, desc: `在最佳拍照觀景台遠眺地平線，捕捉夕陽美景，為一日遊畫下完美句點。` }
+        ],
+        itinerary2: [
+          { time: "Day 1", type: "漫遊經典", title: `${q}主要地標巡禮 ➔ 在地美食品嚐 ➔ 入住特色民宿`, desc: `首日深度走訪核心景點與熱門打卡點，夜晚在無喧囂的星空下安穩入眠。` },
+          { time: "Day 2", type: "自然漫步", title: `清晨漫步生態步道 ➔ 周邊小鎮順遊 ➔ 滿載伴手禮賦歸`, desc: `清晨體驗當地的晨曦寧靜之美，午後順遊鄰近特色聚落，圓滿結束深度假期。` }
+        ],
+        transit: [
+          { icon: "🚗", title: "自行開車", desc: `透過國道或省道快速道路，沿指標即可便利抵達${q}，沿途路況平整易於行駛。` },
+          { icon: "🚄", title: "高鐵/台鐵搭乘", desc: `搭乘台鐵或高鐵至鄰近主要樞紐火車站，再轉乘在地客運班車或計程車即可抵達。` },
+          { icon: "🚌", title: "台灣好行/客運公車", desc: `多數台灣熱門景點皆有直達或區間公車停靠，可多加利用大眾運輸電子票證乘車。` },
+          { icon: "🚲", title: "步行與自行車漫遊", desc: `${q}景點集中度適中，推薦租賃單車或以徒步漫行，細細領略巷弄裡的驚喜與風景。` },
+          { icon: "🅿️", title: "停車指引", desc: `建議提早前往景區周邊公有停車場停放車輛，避免在狹窄巷弄中違規停放影響交通。` }
+        ],
+        tips: [
+          { icon: "☀️", title: "最佳旅遊建議", desc: "出發前可查閱中央氣象局即時天氣預報，選擇晴朗天候更能拍出滿意大片。" },
+          { icon: "👟", title: "輕便衣著裝備", desc: "建議穿著透氣排汗衣物與防滑健行運動鞋，讓走動行程輕鬆無負擔。" },
+          { icon: "📷", title: "攝影黃金時機", desc: "早晨 09:00 前與午後 16:30 之後的自然柔和光線是拍攝人物與風景的最佳時刻。" },
+          { icon: "💧", title: "水分與防曬補給", desc: "隨身攜帶水壺隨時補充水分，戶外活動請做好防曬與防蚊措施。" },
+          { icon: "👨‍👩‍👧", title: "家庭親子同行", desc: "步道整體平順，適合全家大小一同出遊，唯部分階梯需注意幼童腳步安全。" }
+        ],
+        faq: [
+          { q: `前往${q}需要事先預約或門票嗎？`, a: `${q}大部分公共景點為免費開放參觀，若有特定收費展館或休閒農場園區，可於現場購票即可。` },
+          { q: `在${q}建議停留多長時間？`, a: `經典行程建議規劃 3 至 5 小時即可走訪核心景點；若想深度放鬆享受休閒步調，推薦安排整天或兩天一夜。` },
+          { q: `假日前往${q}人潮多嗎？如何避開人潮？`, a: `熱門假期午後通常遊客較多，建議安排在上午 10:00 前抵達，即可悠閒拍照避開尖峰人流。` },
+          { q: `下雨天還適合前往${q}遊玩嗎？`, a: `雨天的景色別有一番朦朧詩意，周邊亦有不少特色咖啡館、在地餐館與室內展館可作為舒適的雨天備案。` }
+        ]
+      };
+    }
+
+    // --- Dynamic SVG Placeholder generator to guarantee zero broken images ---
+    function getSvgFallback(name) {
+      const cleanName = encodeURIComponent(name || '台灣旅遊景點');
+      return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%230284c7"/><stop offset="50%" stop-color="%230f172a"/><stop offset="100%" stop-color="%23f97316"/></linearGradient></defs><rect width="800" height="500" fill="url(%23g)"/><circle cx="400" cy="200" r="70" fill="rgba(255,255,255,0.15)"/><path d="M350 210 L380 170 L410 210 L430 185 L460 220 Z" fill="white" opacity="0.8"/><text x="400" y="320" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="28" font-weight="bold" fill="white" text-anchor="middle">${cleanName}</text><text x="400" y="360" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="16" fill="%23bae6fd" text-anchor="middle">Taiwan Travel AI 台灣精選旅遊景點</text></svg>`;
+    }
+
+    // Global active spot data
+    let currentSpotData = null;
+    let activeItineraryTab = 1;
+
+    // --- Render Entire One-Page Website ---
+    function renderWebsite(data) {
+      currentSpotData = data;
+      const container = document.getElementById('website-output');
+
+      // Update SEO Meta Tags
+      document.title = `${data.name} 旅遊指南｜Taiwan Travel AI 台灣一頁式景點網站`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', `${data.name} 完整旅遊指南：${data.slogan}。包含必訪景點、在地美食推薦、一日二日行程規劃與交通 Tips。`);
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', `${data.name} 旅遊景點指南｜Taiwan Travel AI`);
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', data.slogan);
+
+      // Highlights Cards HTML
+      const highlightsHtml = data.highlights.map(item => `
+        <div class="card">
+          <div class="card-img-wrap">
+            <img class="card-img" src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.onerror=null; this.src=getSvgFallback('${item.name}')">
+            <span class="card-badge">${item.feature}</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${item.name}</h3>
+            <span class="card-feature">✨ ${item.feature}</span>
+            <p class="card-desc">${item.desc}</p>
+            <div class="card-footer">
+              <span>⏱️ ${item.duration}</span>
+              <span style="color:var(--primary); font-weight:600;">必訪推薦 ⭐⭐⭐⭐⭐</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Food Cards HTML
+      const foodsHtml = data.foods.map(item => `
+        <div class="food-card">
+          <div class="food-body">
+            <div class="food-header">
+              <h3 class="food-name">${item.name}</h3>
+              <span class="food-tag">${item.tag}</span>
+            </div>
+            <p class="food-flavor">${item.flavor}</p>
+            <div class="food-spot">
+              <span>📍</span>
+              <span>${item.spot}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Itinerary HTML
+      const itineraryItems = (activeItineraryTab === 1 ? data.itinerary1 : (data.itinerary2 || data.itinerary1));
+      const itineraryHtml = itineraryItems.map(item => `
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">⏰ ${item.time}</span>
+              <span class="timeline-type">${item.type}</span>
+            </div>
+            <h4 class="timeline-title">${item.title}</h4>
+            <p class="timeline-text">${item.desc}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // Transportation HTML
+      const transitHtml = data.transit.map(item => `
+        <div class="transit-card">
+          <div class="transit-icon-wrap">${item.icon}</div>
+          <h3 class="transit-title">${item.title}</h3>
+          <p class="transit-desc">${item.desc}</p>
+        </div>
+      `).join('');
+
+      // Tips HTML
+      const tipsHtml = data.tips.map(item => `
+        <div class="tip-card">
+          <div class="tip-header">
+            <span class="tip-icon">${item.icon}</span>
+            <h3 class="tip-title">${item.title}</h3>
+          </div>
+          <p class="tip-body">${item.desc}</p>
+        </div>
+      `).join('');
+
+      // FAQ HTML
+      const faqHtml = data.faq.map((item, idx) => `
+        <div class="faq-item" id="faq-item-${idx}">
+          <button type="button" class="faq-question" onclick="toggleFaq(${idx})">
+            <span>${item.q}</span>
+            <svg class="faq-icon-cross" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+          <div class="faq-answer">
+            <p>${item.a}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // Build Full Structure
+      container.innerHTML = `
+        <!-- Sticky Navigation Bar -->
+        <nav class="site-nav" id="site-nav">
+          <div class="nav-container">
+            <a href="#site-hero" class="nav-logo">
+              <span class="nav-logo-icon">🇹🇼</span>
+              <span>Taiwan Travel AI</span>
+            </a>
+            <ul class="nav-links">
+              <li><a href="#site-hero" class="nav-link">首頁</a></li>
+              <li><a href="#about-sec" class="nav-link">景點介紹</a></li>
+              <li><a href="#highlights-sec" class="nav-link">景點亮點</a></li>
+              <li><a href="#food-sec" class="nav-link">在地美食</a></li>
+              <li><a href="#itinerary-sec" class="nav-link">建議行程</a></li>
+              <li><a href="#transit-sec" class="nav-link">交通方式</a></li>
+              <li><a href="#tips-sec" class="nav-link">旅遊 Tips</a></li>
+              <li><a href="#faq-sec" class="nav-link">常見問題</a></li>
+            </ul>
+            <div class="nav-actions">
+              <button class="nav-btn-alt" onclick="scrollToGenerator()">
+                <span>🔍 換其他景點</span>
+              </button>
+              <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="切換選單">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Mobile Menu Drawer -->
+          <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+            <a href="#site-hero" onclick="toggleMobileMenu()">首頁</a>
+            <a href="#about-sec" onclick="toggleMobileMenu()">認識 ${data.name}</a>
+            <a href="#highlights-sec" onclick="toggleMobileMenu()">必訪亮點</a>
+            <a href="#food-sec" onclick="toggleMobileMenu()">在地美食</a>
+            <a href="#itinerary-sec" onclick="toggleMobileMenu()">建議行程</a>
+            <a href="#transit-sec" onclick="toggleMobileMenu()">交通方式</a>
+            <a href="#tips-sec" onclick="toggleMobileMenu()">旅遊 Tips</a>
+            <a href="#faq-sec" onclick="toggleMobileMenu()">常見問題 FAQ</a>
+          </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section" id="site-hero" style="background-image: url('${data.heroImage}');">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <div class="hero-badge">${data.badge}</div>
+            <h1 class="hero-title">${data.name}</h1>
+            <p class="hero-slogan">${data.slogan}</p>
+            <p class="hero-intro">${data.intro}</p>
+            
+            <div class="hero-badges-row">
+              <span class="hero-meta-pill">🗓️ ${data.meta.season}</span>
+              <span class="hero-meta-pill">⏱️ ${data.meta.duration}</span>
+              <span class="hero-meta-pill">👥 ${data.meta.target}</span>
+              <span class="hero-meta-pill">🌿 ${data.meta.crowd}</span>
+            </div>
+
+            <div class="hero-actions">
+              <a href="#about-sec" class="hero-btn-primary">立即探索景點 ➜</a>
+              <a href="#itinerary-sec" class="hero-btn-secondary">查看推薦行程</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="section-wrap" id="about-sec">
+          <div class="content-container">
+            <div class="section-header">
+              <span class="section-tag">ABOUT ${data.enName.toUpperCase()}</span>
+              <h2 class="section-title">認識這個地方</h2>
+              <p class="section-desc">深入走訪 ${data.name} 的地理自然與文化底蘊，感受土地的溫度與風采</p>
+            </div>
+
+            <div class="about-grid">
+              <div class="about-article">
+                <h3 class="about-lead">${data.about.lead}</h3>
+                <p class="about-p">${data.about.p1}</p>
+                <p class="about-p">${data.about.p2}</p>
+                <div class="about-tags">
+                  ${data.about.tags.map(t => `<span class="about-tag-item"># ${t}</span>`).join('')}
+                </div>
+              </div>
+
+              <div class="about-metrics">
+                <div class="metric-card">
+                  <div class="metric-icon">🏛️</div>
+                  <div class="metric-val">${data.metrics.culture}</div>
+                  <div class="metric-lbl">文化歷史指數</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">🌲</div>
+                  <div class="metric-val">${data.metrics.nature}</div>
+                  <div class="metric-lbl">自然景觀指數</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">🍜</div>
+                  <div class="metric-val">${data.metrics.food}</div>
+                  <div class="metric-lbl">在地美食熱度</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">🚌</div>
+                  <div class="metric-val">${data.metrics.transit}</div>
+                  <div class="metric-lbl">交通便利度</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Highlights Section -->
+        <section class="section-wrap section-alt" id="highlights-sec">
+          <div class="content-container">
+            <div class="section-header">
+              <span class="section-tag">MUST-VISIT HIGHLIGHTS</span>
+              <h2 class="section-title">${data.name} 必訪景點亮點</h2>
+              <p class="section-desc">精選最具代表性的必拍地標與秘境步道，不錯過任何一處精彩瞬間</p>
+            </div>
+            <div class="cards-grid">
+              ${highlightsHtml}
+            </div>
+          </div>
+        </section>
+
+        <!-- Food Section -->
+        <section class="section-wrap" id="food-sec">
+          <div class="content-container">
+            <div class="section-header">
+              <span class="section-tag">LOCAL DELICACIES</span>
+              <h2 class="section-title">${data.name} 必吃在地美食</h2>
+              <p class="section-desc">味蕾上的旅行記憶，嚴選最具口碑的老字號小吃與在地特色美味</p>
+            </div>
+            <div class="cards-grid">
+              ${foodsHtml}
+            </div>
+          </div>
+        </section>
+
+        <!-- Itinerary Section -->
+        <section class="section-wrap section-alt" id="itinerary-sec">
+          <div class="content-container">
+            <div class="section-header">
+              <span class="section-tag">RECOMMENDED ITINERARY</span>
+              <h2 class="section-title">${data.name} 建議旅遊行程</h2>
+              <p class="section-desc">精心排定最流暢的動線與時間節奏，讓旅行輕鬆充實不踩雷</p>
+            </div>
+
+            <div class="itinerary-tabs">
+              <button class="itinerary-tab-btn ${activeItineraryTab === 1 ? 'active' : ''}" onclick="switchItineraryTab(1)">
+                🌟 一日經典慢活行程
+              </button>
+              <button class="itinerary-tab-btn ${activeItineraryTab === 2 ? 'active' : ''}" onclick="switchItineraryTab(2)">
+                🌿 二日全景深度探索
+              </button>
+            </div>
+
+            <div class="timeline-container" id="timeline-container">
+              ${itineraryHtml}
+            </div>
+          </div>
+        </section>
+
+        <!-- Transportation Section -->
+        <section class="section-wrap" id="transit-sec">
+          <div class="content-container">
+            <div class="section-header">
+              <span class="section-tag">TRANSPORTATION GUIDE</span>
+              <h2 class="section-title">${data.name} 交通方式指南</h2>
+              <p class="section-desc">開車路線、大眾運輸、公車接駁與停車策略一次掌握</p>
+            </div>
+            <div class="transit-grid">
+              ${transitHtml}
+            </div>
+          </div>
+        </section>
+
+        <!-- Travel Tips Section -->
+        <section class="section-wrap section-alt" id="tips-sec">
+          <div class="content-container">
+            <div class="section-header">
+              <span class="section-tag">PRACTICAL TRAVEL TIPS</span>
+              <h2 class="section-title">${data.name} 旅遊 Tips 實用叮嚀</h2>
+              <p class="section-desc">穿著裝備、氣候變化、拍照私房視角與安全注意事項</p>
+            </div>
+            <div class="tips-grid">
+              ${tipsHtml}
+            </div>
+          </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="section-wrap" id="faq-sec">
+          <div class="content-container">
+            <div class="section-header">
+              <span class="section-tag">FREQUENTLY ASKED QUESTIONS</span>
+              <h2 class="section-title">常見問題解答 FAQ</h2>
+              <p class="section-desc">解答旅人最關心的行前疑問，讓您的旅程萬無一失</p>
+            </div>
+            <div class="faq-container">
+              ${faqHtml}
+            </div>
+          </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="section-wrap">
+          <div class="content-container">
+            <div class="cta-card">
+              <h2 class="cta-title">準備開始你的 ${data.name} 之旅</h2>
+              <p class="cta-desc">心動不如馬上出發！無論是一個人自在放空，或是與親朋好友同行，台灣之美正等待你親臨體會。</p>
+              <div class="cta-btns">
+                <button class="cta-btn-main" onclick="scrollToGenerator()">
+                  ✨ 產生其他台灣景點網站
+                </button>
+                <button class="cta-btn-outline" onclick="printGuide()">
+                  🖨️ 列印此頁旅遊指南
+                </button>
+                <button class="cta-btn-outline" onclick="copyShareLink()">
+                  🔗 複製此景點分享連結
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Site Footer -->
+        <footer class="site-footer">
+          <div class="footer-container">
+            <div class="footer-brand">🇹🇼 Taiwan Travel AI</div>
+            <div class="footer-tagline">Explore Taiwan · Discover Taiwan · Experience Taiwan</div>
+            <div class="footer-links">
+              <a href="#site-hero">首頁</a>
+              <a href="#about-sec">認識景點</a>
+              <a href="#highlights-sec">必訪亮點</a>
+              <a href="#food-sec">美食推薦</a>
+              <a href="#itinerary-sec">行程規劃</a>
+              <a href="#transit-sec">交通指引</a>
+              <a href="#tips-sec">實用 Tips</a>
+              <a href="#faq-sec">常見問題</a>
+            </div>
+            <p class="footer-copy">
+              © 2026 Taiwan Travel AI. 台灣旅遊景點一頁式網站產生器 · 本指南由 AI 智能編排生成 · 祝您擁有難忘的台灣美好旅程
+            </p>
+          </div>
+        </footer>
+      `;
+
+      // Automatically open the first FAQ item
+      const firstFaq = document.getElementById('faq-item-0');
+      if (firstFaq) firstFaq.classList.add('active');
+    }
+
+    // --- Switch Itinerary Tab ---
+    function switchItineraryTab(tabNumber) {
+      activeItineraryTab = tabNumber;
+      if (!currentSpotData) return;
+      const buttons = document.querySelectorAll('.itinerary-tab-btn');
+      buttons.forEach((btn, index) => {
+        btn.classList.toggle('active', index + 1 === tabNumber);
+      });
+      const container = document.getElementById('timeline-container');
+      if (!container) return;
+      const items = (tabNumber === 1 ? currentSpotData.itinerary1 : (currentSpotData.itinerary2 || currentSpotData.itinerary1));
+      container.innerHTML = items.map(item => `
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">⏰ ${item.time}</span>
+              <span class="timeline-type">${item.type}</span>
+            </div>
+            <h4 class="timeline-title">${item.title}</h4>
+            <p class="timeline-text">${item.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // --- FAQ Accordion Toggle ---
+    function toggleFaq(index) {
+      const item = document.getElementById(`faq-item-${index}`);
+      if (item) {
+        item.classList.toggle('active');
+      }
+    }
+
+    // --- Mobile Menu Toggle ---
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      if (drawer) {
+        drawer.classList.toggle('open');
+      }
+    }
+
+    // --- Scroll to Generator form ---
+    function scrollToGenerator() {
+      const genBar = document.getElementById('gen-bar');
+      if (genBar) {
+        genBar.scrollIntoView({ behavior: 'smooth' });
+        const input = document.getElementById('spot-input');
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      }
+    }
+
+    // --- Handle AI Website Generation ---
+    function handleGenerate(spotQuery) {
+      const input = document.getElementById('spot-input');
+      const targetQuery = (spotQuery || (input ? input.value : '')).trim();
+      if (!targetQuery) return;
+
+      if (input) input.value = targetQuery;
+
+      // Update sample tags active state
+      const tags = document.querySelectorAll('.sample-tag');
+      tags.forEach(t => {
+        t.classList.toggle('active', t.dataset.spot === targetQuery);
+      });
+
+      // Show AI Loading Animation
+      const overlay = document.getElementById('loading-overlay');
+      const stepText = document.getElementById('loading-step');
+      const fillBar = document.getElementById('progress-fill');
+      
+      overlay.classList.remove('hidden');
+
+      const steps = [
+        `正在解析「${targetQuery}」地理位置與人文地貌...`,
+        `AI 正在彙整「${targetQuery}」必訪景點亮點與私房美食...`,
+        `精心規劃「${targetQuery}」一日遊與二日遊黃金動線與交通指南...`,
+        `構建專屬響應式一頁式網站與優化 SEO 結構...`
+      ];
+
+      let currentStep = 0;
+      stepText.textContent = steps[0];
+      fillBar.style.width = '25%';
+
+      const interval = setInterval(() => {
+        currentStep++;
+        if (currentStep < steps.length) {
+          stepText.textContent = steps[currentStep];
+          fillBar.style.width = `${(currentStep + 1) * 25}%`;
+        } else {
+          clearInterval(interval);
+          setTimeout(() => {
+            overlay.classList.add('hidden');
+            const data = generateSmartSpot(targetQuery);
+            renderWebsite(data);
+
+            // Smooth scroll down to generated hero
+            const hero = document.getElementById('site-hero');
+            if (hero) {
+              hero.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 300);
+        }
+      }, 350);
+    }
+
+    // --- Sample Spot Tags Initialization ---
+    const sampleSpots = [
+      { name: "九份", emoji: "🏮" },
+      { name: "日月潭", emoji: "🌊" },
+      { name: "阿里山", emoji: "🌲" },
+      { name: "墾丁", emoji: "🌴" },
+      { name: "淡水", emoji: "🌅" },
+      { name: "台南", emoji: "🏛️" },
+      { name: "花蓮", emoji: "🏔️" },
+      { name: "台東", emoji: "🌾" }
+    ];
+
+    function initSampleTags() {
+      const container = document.getElementById('sample-tags');
+      if (!container) return;
+      container.innerHTML = sampleSpots.map(s => `
+        <button type="button" class="sample-tag" data-spot="${s.name}" onclick="handleGenerate('${s.name}')">
+          <span>${s.emoji}</span>
+          <span>${s.name}</span>
+        </button>
+      `).join('');
+    }
+
+    // --- Toast message ---
+    function showToast(msg) {
+      let toast = document.querySelector('.toast-msg');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast-msg';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // --- Copy Share Link & Print ---
+    function copyShareLink() {
+      const url = window.location.href;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('✅ 已複製本景點網頁連結至剪貼簿！');
+        }).catch(() => {
+          showToast('✅ 連結已就緒：' + url);
+        });
+      } else {
+        showToast('✅ 連結已就緒：' + url);
+      }
+    }
+
+    function printGuide() {
+      window.print();
+    }
+
+    // --- Scroll Listener for Back To Top Button ---
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('back-to-top');
+      if (btn) {
+        if (window.scrollY > 350) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }
+    });
+
+    // --- Initialize App on Load ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initSampleTags();
+      // Default initial generation: 九份
+      handleGenerate('九份');
+    });
+  </script>
+</body>
+</html>

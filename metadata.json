@@ -1,0 +1,6 @@
+{
+  "name": "Taiwan Travel AI 台灣旅遊景點一頁式網站產生器",
+  "description": "輸入台灣旅遊景點名稱，AI 自動生成完整且精美的旅遊景點一頁式網站。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
