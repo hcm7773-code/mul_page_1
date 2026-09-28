@@ -2313,6 +2313,7 @@
     // Global active spot data
     let currentSpotData = null;
     let activeItineraryTab = 1;
+    let generateTimer = null;
 
     // --- Render Entire One-Page Website ---
     function renderWebsite(data) {
@@ -2323,6 +2324,8 @@
       document.title = `${data.name} 旅遊指南｜Taiwan Travel AI 台灣一頁式景點網站`;
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) metaDesc.setAttribute('content', `${data.name} 完整旅遊指南：${data.slogan}。包含必訪景點、在地美食推薦、一日二日行程規劃與交通 Tips。`);
+      const metaKeywords = document.querySelector('meta[name="keywords"]');
+      if (metaKeywords) metaKeywords.setAttribute('content', `${data.name},${data.name}旅遊,台灣景點,${data.name}美食,${data.name}行程規劃,Taiwan Travel AI`);
       const ogTitle = document.querySelector('meta[property="og:title"]');
       if (ogTitle) ogTitle.setAttribute('content', `${data.name} 旅遊景點指南｜Taiwan Travel AI`);
       const ogDesc = document.querySelector('meta[property="og:description"]');
@@ -2733,6 +2736,13 @@
         t.classList.toggle('active', t.dataset.spot === targetQuery);
       });
 
+      // Clear any pending timer
+      if (generateTimer) {
+        clearInterval(generateTimer);
+        generateTimer = null;
+      }
+      activeItineraryTab = 1;
+
       // Show AI Loading Animation
       const overlay = document.getElementById('loading-overlay');
       const stepText = document.getElementById('loading-step');
@@ -2751,13 +2761,14 @@
       stepText.textContent = steps[0];
       fillBar.style.width = '25%';
 
-      const interval = setInterval(() => {
+      generateTimer = setInterval(() => {
         currentStep++;
         if (currentStep < steps.length) {
           stepText.textContent = steps[currentStep];
           fillBar.style.width = `${(currentStep + 1) * 25}%`;
         } else {
-          clearInterval(interval);
+          clearInterval(generateTimer);
+          generateTimer = null;
           setTimeout(() => {
             overlay.classList.add('hidden');
             const data = generateSmartSpot(targetQuery);
@@ -2814,14 +2825,31 @@
     // --- Copy Share Link & Print ---
     function copyShareLink() {
       const url = window.location.href;
-      if (navigator.clipboard) {
+      if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(url).then(() => {
           showToast('✅ 已複製本景點網頁連結至剪貼簿！');
         }).catch(() => {
-          showToast('✅ 連結已就緒：' + url);
+          fallbackCopy(url);
         });
       } else {
-        showToast('✅ 連結已就緒：' + url);
+        fallbackCopy(url);
+      }
+    }
+
+    function fallbackCopy(text) {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('✅ 已複製景點連結至剪貼簿！');
+      } catch (err) {
+        showToast('✅ 景點網址已就緒：' + text);
       }
     }
 
